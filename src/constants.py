@@ -4,5 +4,5 @@
 # like [user,password,
 
 KEYWORDS = ["if", "for", "else", "True", "False", "print", "bool", "int", "str"]
-BUILT_IN_FUNCS = ["print"]
+BUILT_IN_FUNCTIONS = ["print"]
 DATA_TYPE = ["int", "str", "bool"]
