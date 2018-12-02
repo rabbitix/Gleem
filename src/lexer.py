@@ -1,80 +1,57 @@
-# TODO add comments  to this unreadable file! :|
-
-
 import re
 import constants
 
 
 class Lexer(object):
     def __init__(self):
-        pass
+        pass  # constructor function
 
-    def getMatcher(self, matcher, current_index, source_code):
-        if source_code[current_index].count('"') == 2:
-            word = source_code[current_index].partition('"')[-1].partition('"'[0])
+    def getMatcher(self, matcher, sourceCode, currentIndex):
+        # Check if matcher is in the same source_code item
+        if sourceCode[currentIndex].count('"') == 2:
+
+            # this will partition the string and return a tuple like this
+            # ('word', 'matcher(")', ';')
+            # it will separate words in a tuple
+            word = sourceCode[currentIndex].partition('"')[-1].partition('"'[0])
+
+            # This will return the string and any extra characters such as end statement
             if word[2] != '':
                 return ['"' + word[0] + '"', '', word[2]]
+
+            # This will return just the string and empty fields that represent `undefined` or `null`
             else:
                 return ['"' + word[0] + '"', '', '']
+
         else:
-            source_code = source_code[current_index:len(source_code)]
+
+            # Cut off the parts of the source code behind the matcher
+            sourceCode = sourceCode[currentIndex:len(sourceCode)]
+
+            # This will keep track of the string as it is being built up
             word = ""
+
+            # This will keep count of the iterations
             iter_count = 0
-            for item in source_code:
+
+            # This will loop through the source code to find each part of the string and matcher
+            for item in sourceCode:
+
+                # Increment the iteration count
                 iter_count += 1
+
+                # Append the word that found to the string
                 word += item + " "
+
+                # If the word has the matcher in it and it is not the first matcher
                 if matcher in item and iter_count != 1:
+                    # return the whole string, iteration count and extra characters like a statement end
                     return [
-                        '"' + word.partition('"')[-1].partition('"'[0])[0] + '"',
-                        word.partition('"')[-1].partition('"'[0])[2], iter_count - 1]
+                        '"' + word.partition('"')[-1].partition('"'[0])[0] + '"',  # The string
+                        word.partition('"')[-1].partition('"'[0])[2],  # The extra character
+                        iter_count - 1  # Number of iterations it took to get string
+                    ]
+
+                    # Break out the loop as the whole string was found
                     break
 
-    def tokenize(self, source_code):
-        tokens = []
-        source_code = source_code.split()
-        source_index = 0
-        while source_index < len(source_code):
-            word = source_code[source_index]
-            if word in "\n":
-                pass
-            elif word in constants.DATATYPE:
-                tokens.append(["DATATYPE", word])
-            elif word in constants.KEYWORDS:
-                tokens.append(["IDENTIFIER", word])
-            elif re.match("[a-z]", word) or re.match("[A-Z]", word):
-                if word[len(word) - 1] != ';':
-                    tokens.append(["IDENTIFIER", word])
-                else:
-                    tokens.append(["IDENTIFIER", word[0:len(word) - 1]])
-            elif word == "+=" or word == "-=" or word == "*=" or word == "/=" or word == "%=":
-                tokens.append(['INCREMENTAL_OPERATOR', word])
-            elif word in "*-/+%=":
-                tokens.append(["OPERATOR", word])
-            elif word == "&&" or word == "||":
-                tokens.append(["BINARY_OPERATOR", word])
-            elif word == "::":
-                tokens.append(["SEPERATOR", word])
-            elif word in "==" or word in "!=" or word in ">" or word in "<" or word in "<=" or word in ">=":
-                tokens.append(["COMPARISON_OPERATOR", word])
-            elif word in "{}":
-                tokens.append(["SCOPE_DEFINER", word])
-            elif word == "(**" or word == "**)":
-                tokens.append(["COMMENT_DEFINER", word])
-            elif re.match("[0-9]", word) or re.match("[-]?[0-9]", word):
-                if word[len(word) - 1] == ';':
-                    tokens.append(["INTEGER", word[:-1]])
-                else:
-                    tokens.append(["INTEGER", word])
-            elif ('"') in word:
-                matcherReturn = self.getMatcher('"', source_index, source_code)
-                if matcherReturn[1] == '':
-                    tokens.append(["STRING", matcherReturn[0]])
-                else:
-                    tokens.append(["STRING", matcherReturn[0]])
-                    if ';' in matcherReturn[1]: tokens.append(["STATEMENT_END", ";"])
-                    source_index += matcherReturn[2]
-                    pass
-            if ";" in word[len(word) - 1]:
-                tokens.append(["STATEMENT_END", ";"])
-            source_index += 1
-        return tokens
