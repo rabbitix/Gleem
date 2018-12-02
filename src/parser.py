@@ -41,3 +41,9 @@ class Parser(object):
 
         # Return False if the matcher or the terminator_matcher is found
         return False
+
+    def assemble_token_values(self, tokens):
+        attached_tokens = ""
+        for token in tokens:
+            attached_tokens += token[1] + ""
+        return attached_tokens
