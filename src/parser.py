@@ -57,3 +57,13 @@ class Parser(object):
         print('\033[91m', "".join(str(r) for v in error_list for r in (v[1] + " ")), '\033[0m')
         print("-------------------------------=><=---------------------------------")
         quit()
+
+    def get_variable_value(self, name):
+
+        # it will get the value of a variable from the symbol tree and
+        # return the value if the variable exists or an error if it doesn't
+
+        for var in self.symbol_tree:
+            if var[0] == name:
+                return var[1]
+        return False # it means it doesn't exists!
