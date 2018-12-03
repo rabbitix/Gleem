@@ -121,7 +121,7 @@ class Parser(object):
 
     def concatenation_parser(self, concatenation_list):
         # This will parse concatenation of strings and variables with string values or integer
-        # values to concatenate arithmetics to strings together e.g. "Ryan " + last_name;
+        # values to concatenate arithmetics to strings together
 
         full_string = ""
 
@@ -178,3 +178,128 @@ class Parser(object):
                 pass
 
         return '"' + full_string + '"'
+
+    def parsing_variables_decleration(self, token_stream, is_in_body):
+        # this method will parse variable declerations and add them to the source AST or
+        # return them if variable decleration is being parsed for body of a statement
+
+        ast = {'VarDecleration': []}  # The abstract syntax tree for var decl
+        tokens_checked = 0  # Number of token checked that made up the var decl
+        var_exists = True
+
+        for x in range(0, len(token_stream)):
+
+            # Create variables for identify token type and value
+            token_type = token_stream[x][0]
+            token_value = token_stream[x][1]
+
+            # Skip '=' operator in var decl
+            if x is 2 and token_type is "OPERATOR" and token_value is "=":
+                pass
+            # This will handle error detection for making sure  '=' sign is found
+            if x is 2 and token_type is not "OPERATOR" and token_value is not "=":
+                self.send_error_message("Variable Decleration Missing '='.",
+                                        self.token_stream[self.token_index:self.token_index + tokens_checked + 2])
+
+            # If a `statement end` is found then break the parsing
+            if token_stream[x][0] is "STATEMENT_END":
+                break
+
+            # it will parse the first token which will be the var type
+            if x is 0:
+                ast['VarDecleration'].append({"type": token_value})
+
+            # it will parse the second token which will be the name of the var
+            if x is 1 and token_type is "IDENTIFIER":
+
+                # Check if a variable has already been named the same and is so send an error
+                if self.get_variable_value(token_value) is not False:
+                    self.send_error_message(
+                        "Variable '%s' is already exists and cannot be defined again!" % token_value,
+                        self.token_stream[self.token_index:self.token_index + tokens_checked + 1])
+                else:
+                    # Set var exists to False so that it can be added
+                    var_exists = False
+
+                    # This will check if the variable is being delared but not initialised
+                    if token_stream[x + 1][0] is "STATEMENT_END":
+                        # Adds the default value of 'undefined' and breaks out of loop
+                        ast['VarDecleration'].append({"name": token_value})
+                        ast['VarDecleration'].append({"value": '"undefined"'})
+                        tokens_checked += 1
+                        break
+                    else:
+                        ast['VarDecleration'].append({"name": token_value})
+
+            # Error handling for variable name to make sure the naming convention is true and acceptable
+            if x is 1 and token_type is not "IDENTIFIER":
+                self.send_error_message("Invalid Variable Name '%s'" % token_value,
+                                        self.token_stream[self.token_index:self.token_index + tokens_checked + 1])
+
+            # This will parse the 3rd token which is the value of the variable
+            if x is 3 and token_stream[x + 1][0] is "STATEMENT_END":
+
+                # Check if the value matches the variable defined type
+                if type(eval(token_value)) is eval(token_stream[0][1]):
+                    # Add value as a number not a string if it is an int or else add it as a string
+                    try:
+                        ast['VarDecleration'].append({"value": int(token_value)})
+                    except ValueError:
+                        ast['VarDecleration'].append({"value": token_value})
+                else:
+                    self.send_error_message("Variable value does not match defined type!",
+                                            self.token_stream[self.token_index:self.token_index + tokens_checked + 1])
+
+            # This will parse any variable declerations which have concatenation or arithmetics
+            elif x >= 3:
+
+                # This will call the form_value_list method and
+                # it will return the concatenation value and tokens checked
+                value_list_func_call = self.form_value_list(token_stream[tokens_checked:len(token_stream)])
+                value_list = value_list_func_call[0]
+                tokens_checked += value_list_func_call[1]
+
+                # Call the equation parser and append value returned
+                # or try concat parser if an error occurs
+                try:
+                    ast['VarDecleration'].append({"value": self.equation_parser(value_list)})
+                except:
+                    try:
+                        ast['VarDecleration'].append({"value": self.concatenation_parser(value_list)})
+                    except:
+                        self.send_error_message("Invalid variable decleration!",
+                                                self.token_stream[self.token_index:self.token_index + tokens_checked])
+                break  # Break out of the current var parsing loop since we just parsed everything
+
+            tokens_checked += 1  # Indent within overall for loop
+
+        #  error validation checking if all needed var decl elements are in the ast such as:
+        # var type, name and value
+        try:
+            ast['VarDecleration'][0]
+        except:
+            self.send_error_message("Invalid variable decleration could not set variable type!",
+                                    self.token_stream[self.token_index:self.token_index + tokens_checked])
+        try:
+            ast['VarDecleration'][1]
+        except:
+            self.send_error_message("Invalid variable decleration could not set variable name!",
+                                    self.token_stream[self.token_index:self.token_index + tokens_checked])
+        try:
+            ast['VarDecleration'][2]
+        except:
+            self.send_error_message("Invalid variable decleration could not set variable value!",
+                                    self.token_stream[self.token_index:self.token_index + tokens_checked])
+
+        # if this is being run to parse inside a body then there is no need to add it to the source ast
+        # as it will be added to the body of statement being parsed
+        if not is_in_body:
+            self.source_ast['main_scope'].append(ast)
+
+        if not var_exists:
+            self.symbol_tree.append([ast['VarDecleration'][1]['name'], ast['VarDecleration'][2]['value']])
+
+        self.token_index += tokens_checked
+
+        return [ast, tokens_checked]  # return is only used within body parsing to create body ast
+
