@@ -119,3 +119,62 @@ class Parser(object):
 
         return total
 
+    def concatenation_parser(self, concatenation_list):
+        # This will parse concatenation of strings and variables with string values or integer
+        # values to concatenate arithmetics to strings together e.g. "Ryan " + last_name;
+
+        full_string = ""
+
+        for item in range(0, len(concatenation_list)):
+
+            current_value = concatenation_list[item]
+
+            # Add the first item to the string
+            if item == 0:
+                # This checks if the value being checked is a string or a variable
+                # If it is a string then just add it without the surrounding quotes
+                if current_value[0] == '"':
+                    full_string += current_value[1:len(current_value) - 1]
+                # If it isn't a string then get the variable value and append it
+                else:
+                    var_value = self.get_variable_value(current_value)
+                    if var_value is not False:
+                        full_string += var_value[1:len(var_value) - 1]
+                    else:
+                        self.send_error_message(
+                            'Cannot find variable "%s" because it was never created' % concatenation_list[item + 1],
+                            concatenation_list)
+                pass
+
+            # This will check for the concatenation operator
+            if item % 2 == 1:
+
+                if current_value == "+":
+                    # This checks if the value being checked is a string or a variable
+                    if concatenation_list[item + 1][0] != '"':
+
+                        # This will get the variable value and check if it exists if
+                        # so then it adds it to the full string
+                        var_value = self.get_variable_value(concatenation_list[item + 1])
+                        if var_value is not False:
+                            full_string += var_value[1:len(var_value) - 1]
+                        else:
+                            self.send_error_message(
+                                'Cannot find variable "%s" because it was never created' % concatenation_list[item + 1],
+                                concatenation_list)
+
+                    else:
+                        full_string += concatenation_list[item + 1][1:len(concatenation_list[item + 1]) - 1]
+
+                elif current_value == ",":
+                    full_string += " " + concatenation_list[item + 1]
+
+                else:
+                    self.send_error_message("Error parsing equation, check that you are using correct operand",
+                                            concatenation_list)
+
+            # This will skip value as it is already being added and dealt with when getting the operand
+            if item % 2 == 0:
+                pass
+
+        return '"' + full_string + '"'
