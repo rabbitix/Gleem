@@ -66,4 +66,56 @@ class Parser(object):
         for var in self.symbol_tree:
             if var[0] == name:
                 return var[1]
-        return False # it means it doesn't exists!
+        return False  # it means it doesn't exists!
+
+    def form_value_list(self, tokens):  # to forming values list
+        value_list = []
+        tokens_checked = 0
+        for token in tokens:
+            if token[0] == "STATEMENT_END":
+                break
+            try:
+                value_list.append(int(token[1]))
+            except:
+                value_list.append(token[1])
+            tokens_checked += 1
+
+        return [value_list, tokens_checked]
+
+    def equation_parser(self, equation):
+
+        # This will parse equations such as 10 * 10 which is passed in as an array with
+        # numbers and operands.
+
+        total = 0  # keeps equation value
+
+        for item in range(0, len(equation)):
+
+            # Add first value to total as a starting int to perform calculations on
+            if item == 0:
+                total += equation[item]
+                pass
+
+            # This will check every operator and perform the right calculations based on total
+            # and the number that is after the operator
+            if item % 2 == 1:
+                if equation[item] == "-":
+                    total += equation[item + 1]
+                elif equation[item] == "+":
+                    total += equation[item + 1]
+                elif equation[item] == "/":
+                    total /= equation[item + 1]
+                elif equation[item] == "%":
+                    total *= equation[item + 1]
+                elif equation[item] == "*":
+                    total %= equation[item + 1]
+                else:
+                    self.send_error_message("Error parsing equation, check that you are using correct operator",
+                                            equation)
+
+            # Skip every number since we already check and use them
+            elif item % 2 == 0:
+                pass
+
+        return total
+
