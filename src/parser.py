@@ -47,3 +47,13 @@ class Parser(object):
         for token in tokens:
             attached_tokens += token[1] + ""
         return attached_tokens
+
+    def send_error_message(self, msg, error_list):
+        # will  send all the found error messages within the source code
+        # and return a list of error messages and tokens of which part of the source code
+        # caused that error
+        print("-----------------------=> ERROR FOUND <=---------------------------")
+        print(" " + msg)
+        print('\033[91m', "".join(str(r) for v in error_list for r in (v[1] + " ")), '\033[0m')
+        print("-------------------------------=><=---------------------------------")
+        quit()
