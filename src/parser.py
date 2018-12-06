@@ -303,3 +303,36 @@ class Parser(object):
 
         return [ast, tokens_checked]  # return is only used within body parsing to create body ast
 
+    def get_statement_body(self, token_stream):
+        # This will get the tokens that make up the body of a statement (in a condition or a loop)
+        # and return the tokens
+        # it will returns tokens that make up the body for statements
+
+        count_of_nesting = 1
+        tokens_checked = 0
+        body_tokens = []
+
+        for token in token_stream:
+
+            tokens_checked += 1
+
+            # separate tokens types and values to make it more readable
+            token_value = token[1]
+            token_type = token[0]
+
+            # keeps track of the opening and closing scope definers '}' and '{' (for statements)
+            if token_type is "SCOPE_DEFINER" and token_value is "{":
+                count_of_nesting += 1
+            elif token_type is "SCOPE_DEFINER" and token_value is "}":
+                count_of_nesting -= 1
+
+            # checks whether the closing scope definer is found to finish creating body tokens
+            if count_of_nesting is 0: # have some doubt
+                body_tokens.append(token)
+                break
+            else:
+                body_tokens.append(token)
+
+        # print('{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}', body_tokens)
+
+        return [body_tokens, tokens_checked]
