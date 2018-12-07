@@ -327,7 +327,7 @@ class Parser(object):
                 count_of_nesting -= 1
 
             # checks whether the closing scope definer is found to finish creating body tokens
-            if count_of_nesting is 0: # have some doubt
+            if count_of_nesting is 0:  # have some doubt
                 body_tokens.append(token)
                 break
             else:
@@ -336,3 +336,58 @@ class Parser(object):
         # print('{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}', body_tokens)
 
         return [body_tokens, tokens_checked]
+
+    def parsing_conditional_statements(self, token_stream, is_nested):
+        # this will parse conditional statements like 'if else' and create an
+        # abstract syntax tree for it and will return that as a AST tree dict
+        # is_nested parameter means that there is a condition inside another condition
+
+        tokens_checked = 0
+        ast = {'ConditionalStatement': []}
+
+        # this loop will parse the condition and walk through it!
+        for x in range(0, len(token_stream)):
+
+            allowed_conditional_token_types = ['INTEGER', 'STRING', 'IDENTIFIER']
+            tokens_checked += 1
+            token_type = token_stream[x][0]
+            token_value = token_stream[x][1]
+            # break out of the loop at the end of the condition statement
+            if token_type is 'SCOPE_DEFINER' and token_value is '{':
+                break
+            # Pass if token is the 'if' identifier as it has already been checked
+            # cuz we dont want to parse `if` itself
+            if token_type is 'IDENTIFIER' and token_value is 'if':
+                pass
+            # This will check for the first value and add it to the AST
+            if x is 1 and token_type in allowed_conditional_token_types:
+                # This will check for an identifier (var[variable])
+                # and then check if it exists so it can add the value to it
+                if self.get_variable_value(token_value) is not False:
+                    ast['ConditionalStatement'].append({'value1': self.get_variable_value(token_value)})
+                else:
+                    ast['ConditionalStatement'].append({'value1': token_value})
+
+            # This will check for the comparison operator and add it to the AST
+            if x is 2 and token_type is 'COMPARISON_OPERATOR':
+                ast['ConditionalStatement'].append({'comparison_type': token_value})
+
+            # This will check for the second value and add it to the AST
+            if x is 3 and token_type in allowed_conditional_token_types:
+                # This will check for an identifier (var) and then check if it exists so it can add the value to it
+                if self.get_variable_value(token_value) is not False:
+                    ast['ConditionalStatement'].append({'value2': self.get_variable_value(token_value)})
+                else:
+                    ast['ConditionalStatement'].append({'value2': token_value})
+
+        # Increment token index for tokens checked in condition that we parse
+        self.token_index += tokens_checked - 1
+
+        # This will get the body tokens and the tokens checked
+        # that make up the body to skip them
+        get_body_return = self.get_statement_body(token_stream[tokens_checked:len(token_stream)])
+        print()
+        print()
+        print('---=>', get_body_return)  # this part is tmp for see results
+        print()
+        print()
