@@ -456,4 +456,58 @@ class Parser(object):
         statement_ast[astName].append(ast)
         # If the statments is not nested then add it or else dont
         # because parent will be added containing the child
-        if not isNested: self.source_ast['main_scope'].append(statement_ast)
+        if not isNested:
+            self.source_ast['main_scope'].append(statement_ast)
+
+    def parse_built_in_function(self, token_stream, isInBody):
+        # This will parse built in methods and their parameters form an AST tree
+        # will return the condition ast without the body
+
+        ast = {'PrebuiltFunction': []}
+        tokens_checked = 0
+
+        for token in range(0, len(token_stream)):
+
+            # Break out of loop when statement end is found
+            if token_stream[token][0] == "STATEMENT_END":
+                break
+
+            # This will get the builtin function name
+            if token == 0:
+                ast['PrebuiltFunction'].append({'type': token_stream[token][1]})
+
+            # This will get the parameter
+            if token is 1 and token_stream[token][0] in ['INTEGER', 'STRING', 'IDENTIFIER']:
+
+                # If the argument passed is a variable (identifier) then try get value
+                if token_stream[token][0] == 'IDENTIFIER':
+                    # Get value and handle any errors
+                    value = self.get_variable_value(token_stream[token][1])
+                    if value is not False:
+                        ast['PrebuiltFunction'].append({'arguments': [value]})
+                    else:
+                        self.send_error_message("Variable '%s' does not exist" % token_stream[tokens_checked][1],
+                                                token_stream[0:tokens_checked + 1])
+                else:
+                    if token_stream[token + 1][0] == 'STATEMENT_END':
+                        ast['PrebuiltFunction'].append({'arguments': [token_stream[token][1]]})
+                    else:
+                        value_list_func_call = self.form_value_list(token_stream[tokens_checked:len(token_stream)])
+                        print(value_list_func_call)
+
+            # This will throw an error if argument passed in is not a permitted token type
+            elif token == 1 and token_stream[token][0] not in ['INTEGER', 'STRING', 'IDENTIFIER']:
+                self.send_error_message(
+                    "Invalid argument type of %s expected string, identifier or primitive data type" %
+                    token_stream[token][0],
+                    token_stream[0:tokens_checked + 1])
+
+            tokens_checked += 1  # Increment tokens checked
+
+        # If it's being parsed within a body don't ass the ast to the source ast
+        if not isInBody:
+            self.source_ast['main_scope'].append(ast)
+        # Increase token index to make up for tokens checked
+        self.token_index += tokens_checked
+
+        return [ast, tokens_checked]
