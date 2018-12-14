@@ -391,3 +391,62 @@ class Parser(object):
         print('---=>', get_body_return)  # this part is tmp for see results
         print()
         print()
+        # not complete yet!
+
+    def parse_body(self, token_stream, statement_ast, astName, isNested):
+        # This will parse the body of conditional, iteration, functions and etc
+        # to return a body ast like this --> {'body': []}
+
+        tokens_checked = 0
+        nesting_count = 0
+        ast = {'body': []}
+        while tokens_checked < len(token_stream):  # iter trough all token string
+
+            # This will parse variable declerations within the body
+            if token_stream[tokens_checked][0] is "DATATYPE":
+                var_decleration_parse = self.parsing_variables_decleration(
+                    token_stream[tokens_checked:len(token_stream)],
+                    True)
+                ast['body'].append(var_decleration_parse[0])
+                tokens_checked += var_decleration_parse[1]
+
+            # This will parse nested conditional statements within the body
+            elif token_stream[tokens_checked][0] is 'IDENTIFIER' and token_stream[tokens_checked][1] is 'if':
+                condition_parsing = self.parsing_conditional_statements(token_stream[tokens_checked:len(token_stream)],
+                                                                        True)
+                ast['body'].append(condition_parsing[0])
+                tokens_checked += condition_parsing[1] - 1  # minus one to dont skip extra token
+
+            elif token_stream[tokens_checked][0] is "IDENTIFIER" and token_stream[tokens_checked][1] is "for":
+                loop_parse = self.parse_for_loop(token_stream[tokens_checked:len(token_stream)], True)
+                ast['body'].append(loop_parse[0])
+                tokens_checked += loop_parse[1]
+
+            # This will parse builtin functions in the body
+            elif token_stream[tokens_checked][0] == 'IDENTIFIER' and token_stream[tokens_checked][
+                1] in constants.BUILT_IN_FUNCTIONS:
+                built_in_func_parse = self.parse_built_in_function(token_stream[tokens_checked:len(token_stream)], True)
+                ast['body'].append(built_in_func_parse[0])
+                tokens_checked += built_in_func_parse[1]
+
+            # This will parse comments in the body
+            elif token_stream[tokens_checked][0] == "COMMENT_DEFINER" and token_stream[tokens_checked][1] == "($":
+                comment_parsing = self.parse_comment(token_stream[tokens_checked:len(token_stream)], True)
+                ast['body'].append(comment_parsing[0])
+                tokens_checked += comment_parsing[1]
+
+            # This is needed to increase token index  when a closing scope definer is found because it is skipped
+            # so when it is found then add 1 or else this will lead to a logical bug in nesting
+            if token_stream[tokens_checked][1] == '}':
+                nesting_count += 1
+
+            tokens_checked += 1
+
+        # Increase token index by amount of closing scope definers found which is usually skipped and add 1 for the last
+        #  one which is not passed in to this method
+        self.token_index += nesting_count + 1
+        # Form the full AST with the statement and body combined and then add it to the source AST
+        statement_ast[astName].append(ast)
+        # If the statments is not nested then add it or else dont
+        # because parent will be added containing the child
+        if not isNested: self.source_ast['main_scope'].append(statement_ast)
