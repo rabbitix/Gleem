@@ -391,7 +391,14 @@ class Parser(object):
         print('---=>', get_body_return)  # this part is tmp for see results
         print()
         print()
-        # not complete yet!
+        # If it nested then call parse_body with nested parameter of true else false
+        if is_nested is True:
+            self.parse_body(get_body_return[0], ast, 'ConditionalStatement', True)
+        else:
+            self.parse_body(get_body_return[0], ast, 'ConditionalStatement', False)
+        # Add the amount tokens we checked in body
+        tokens_checked += get_body_return[1]
+        return [ast, tokens_checked]  # Return is only used within body parsing to create body AST
 
     def parse_body(self, token_stream, statement_ast, astName, isNested):
         # This will parse the body of conditional, iteration, functions and etc
