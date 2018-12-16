@@ -400,7 +400,7 @@ class Parser(object):
         tokens_checked += get_body_return[1]
         return [ast, tokens_checked]  # Return is only used within body parsing to create body AST
 
-    def parse_body(self, token_stream, statement_ast, astName, isNested):
+    def parse_body(self, token_stream, statement_ast, astName, is_nested):
         # This will parse the body of conditional, iteration, functions and etc
         # to return a body ast like this --> {'body': []}
 
@@ -456,10 +456,10 @@ class Parser(object):
         statement_ast[astName].append(ast)
         # If the statments is not nested then add it or else dont
         # because parent will be added containing the child
-        if not isNested:
+        if not is_nested:
             self.source_ast['main_scope'].append(statement_ast)
 
-    def parse_built_in_function(self, token_stream, isInBody):
+    def parse_built_in_function(self, token_stream, is_In_body):
         # This will parse built in methods and their parameters form an AST tree
         # will return the condition ast without the body
 
@@ -505,17 +505,44 @@ class Parser(object):
             tokens_checked += 1  # Increment tokens checked
 
         # If it's being parsed within a body don't ass the ast to the source ast
-        if not isInBody:
+        if not is_In_body:
             self.source_ast['main_scope'].append(ast)
         # Increase token index to make up for tokens checked
         self.token_index += tokens_checked
 
         return [ast, tokens_checked]
 
-    def parse_comment(self, token_stream, isInBody):
-        pass
+    def parse_comment(self, token_stream, is_In_body):
+        # his will parse single/multi line comments
 
-    def parse_for_loop(self, token_stream, isInBody):
+        tokens_checked = 0
+        comment_string = ""
+        ast = {'Comment': ""}
+
+        for token in range(0, len(token_stream)):
+
+            # When the closing comment definer is found then break out the loop
+            if token_stream[token][0] is "COMMENT_DEFINER" and token is not 0:
+                break
+            # add all words together to make a full comment string
+            # and also skip the first token because its the comment_definer
+            if token is not 0:
+                comment_string += str(token_stream[token][1]) + " "
+
+            # Increment tokens checked
+            tokens_checked += 1
+
+        # Append comment string to the comment AST
+        ast['Comment'] = comment_string
+        # If parse not called from body parser method then append to source ast
+        if not is_In_body:
+            self.source_ast['main_scope'].append(ast)
+        # Append the number of variables checked to the token index
+        self.token_index += tokens_checked
+
+        return [ast, tokens_checked]
+
+    def parse_for_loop(self, token_stream, is_in_body):
         pass
 
     def parse(self, token_stream):
