@@ -511,3 +511,13 @@ class Parser(object):
         self.token_index += tokens_checked
 
         return [ast, tokens_checked]
+
+    def parse_comment(self, token_stream, isInBody):
+        pass
+
+    def parse_for_loop(self, token_stream, isInBody):
+        pass
+
+    def parse(self, token_stream):
+        pass
+
