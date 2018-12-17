@@ -6,7 +6,7 @@ class VariableObject(object):
         # This will hold the exec string for variable decleration
         self.exec_string = ""
 
-    def transpile(self):
+    def translate(self):
 
         # This method will use the AST in order to create a python version of the gleem
         # generated dictionary AST.
