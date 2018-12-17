@@ -628,4 +628,41 @@ class Parser(object):
         return [ast, tokens_checked]
 
     def parse(self, token_stream):
-        pass
+
+        # This will parse the tokens given as argument and turn the sequence of tokens into
+        # abstract syntax trees
+
+        # Loop through each token
+        while self.token_index < len(token_stream):
+
+            # separate values and types to make it more readable
+            token_type = token_stream[self.token_index][0]
+            token_value = token_stream[self.token_index][1]
+
+            print('------------------------------ ', token_type, token_value, ' ------------------------------')
+
+            # This will find the token pattern for a variable decleration
+            if token_type is "DATATYPE":
+                self.parsing_variables_decleration(token_stream[self.token_index:len(token_stream)], False)
+
+            # This will find the token pattern for an if statement
+            elif token_type is "IDENTIFIER" and token_value is "if":
+                self.parsing_conditional_statements(token_stream[self.token_index:len(token_stream)], False)
+
+            # This will find the pattern started for a `for` loop
+            elif token_type is "IDENTIFIER" and token_value is "for":
+                print("FOR BEFORE: ", self.token_index)
+                self.parse_for_loop(token_stream[self.token_index:len(token_stream)], False)
+                print("FOR AFTER: ", self.token_index)
+
+            # This will find the pattern for a built-in function call
+            elif token_type is "IDENTIFIER" and token_value in constants.BUILT_IN_FUNCTIONS:
+                self.parse_built_in_function(token_stream[self.token_index:len(token_stream)], False)
+
+            # This will find the pattern started for a comment
+            elif token_type is "COMMENT_DEFINER" and token_value is "($$":
+                self.parse_comment(token_stream[self.token_index:len(token_stream)], False)
+
+            self.token_index += 1
+
+        return self.source_ast
