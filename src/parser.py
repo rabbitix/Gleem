@@ -543,8 +543,89 @@ class Parser(object):
         return [ast, tokens_checked]
 
     def parse_for_loop(self, token_stream, is_in_body):
-        pass
+
+        # This will parse for loops
+        #  for example `for int x = 0 ?? < 10 ?? + 1 {}`
+        ast = {'ForLoop': []}
+        tokens_checked = 1  # its starts at 1 cuz `for` keyword is useless~!
+
+        #  This will know whether it is parsing 'ConditionForLoop' or 'InrementerForLoop'
+        # 1 means ConditionForLoop
+        # 2 means IncrementerForLoop
+        loop_section = 1
+
+        # Loop through the for loop tokens while tokens_checked value is less than the length of tokens_stream
+        while tokens_checked < len(token_stream):
+
+            # If the opening scope definer is found then break out the loop
+            if token_stream[tokens_checked][1] is '{':
+                break
+
+            # this should get the variable decleration which starts at the first token index
+            if tokens_checked is 1:
+
+                # Get the tokens before the first separator '??'
+                var_decl_tokens = self.get_token_to_the_matcher("??", '{',
+                                                                token_stream[tokens_checked:len(token_stream)])
+
+                # Perform error handling to see if the tokens couldn't be fetched and the separator '??' wasn't found
+                if var_decl_tokens is False:
+                    self.send_error_message("Loop missing separator '??'", token_stream)
+
+                # Manually append statement end, to the end of the var decleration
+                # so var parser works right
+                var_decl_tokens[0].append(['STATEMENT_END', ';'])
+                var_parsing = self.parsing_variables_decleration(var_decl_tokens[0], True)
+
+                # Append initialValueName property to the ForLoop AST
+                # Call the variable parser with True so the var decleration isn't added to source_ast
+                ast['ForLoop'].append({'initialValueName': var_parsing[0]['VarDecleration'][1]['name']})
+
+                # Append initialValue property to the ForLoop AST
+                ast['ForLoop'].append({'initialValue': var_parsing[0]['VarDecleration'][2]['value']})
+
+                # Decrease tokens checked count and minus 1 because we manually add the STATEMENT_END token
+                self.token_index -= var_decl_tokens[1]
+
+            if token_stream[tokens_checked][1] is '??':
+
+                # This will handle the parsing for loop section 1 which is the ConditionForLoop such as x < 10
+                if loop_section is 1:
+                    condition_tokens = self.get_token_to_the_matcher('??', '{',
+                                                                     token_stream[tokens_checked + 1:len(token_stream)])
+                    ast['ForLoop'].append({'comparison': condition_tokens[0][1][1]})
+                    ast['ForLoop'].append({'endValue': condition_tokens[0][1][1]})
+                    tokens_checked += condition_tokens[1]
+
+                # This will handle the parsing for loop section 1 which is the IncrementForLoop for example x = x + 1
+                if loop_section is 2:
+                    increment_tokens = self.get_token_to_the_matcher('{', '}',
+                                                                     token_stream[tokens_checked + 1:len(token_stream)])
+                    ast['ForLoop'].append({'incrementer': self.assemble_token_values(increment_tokens[0])})
+                    tokens_checked += increment_tokens[1]
+
+                # Increase the loop_section by 1 so it can read next section differently
+                loop_section += 1
+
+            # Increase tokens checked count by 1 for each token being looped through
+            tokens_checked += 1
+
+        self.token_index += tokens_checked
+
+        # Get the tokens from the body and the amount of tokens there is in the body
+        # Add 1 as usual body tokens parsing and object generation or else indentation won't work properly
+        get_body_tokens = self.get_statement_body(token_stream[tokens_checked + 1:len(token_stream)])
+
+        # If parse not called from body parser method then append to source ast
+        if not is_in_body:
+            self.parse_body(get_body_tokens[0], ast, 'ForLoop', False)
+        else:
+            self.parse_body(get_body_tokens[0], ast, 'ForLoop', True)
+
+        # Add the amount tokens we checked in body
+        tokens_checked += get_body_tokens[1]
+
+        return [ast, tokens_checked]
 
     def parse(self, token_stream):
         pass
-
