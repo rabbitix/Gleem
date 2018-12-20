@@ -1,1 +1,1 @@
-#instagram part
+from InstagramAPI import InstagramAPI as ig
