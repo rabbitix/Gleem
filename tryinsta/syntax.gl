@@ -1,0 +1,8 @@
+User atomcoder
+Password 123456789
+start
+likeـlastـpost afazeli98
+end
+start
+follow_user(user_id)
+end
