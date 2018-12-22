@@ -1,4 +1,6 @@
-class VariableObject(object):
+
+
+class VariableObject():
 
     def __init__(self, ast):
         # The ast will hold the dictionary version of the ast which is like a blueprint
@@ -6,24 +8,26 @@ class VariableObject(object):
         # This will hold the exec string for variable decleration
         self.exec_string = ""
 
-    def translate(self):
+    
+    def transpile(self):
+        """ Transpile 
+        
+        This method will use the AST in order to create a python version of the gleem
+        generated dictionary AST.
 
-        # This method will use the AST in order to create a python version of the gleem
-        # generated dictionary AST.
-
-        # Loop through all dictionary values
-        for value in self.ast:
-
+        return:
+            exec_string (str) : The python transpiled code
+        """
+        
+        # Loop through each dictionary value items
+        for val in self.ast:
+            
             # Get the name of the variable
-            try:
-                self.exec_string += value['name'] + " = "
-            except:
-                pass
+            try: self.exec_string += val['name'] + " = "
+            except: pass
 
             # Get the value of the variable
-            try:
-                self.exec_string += str(value['value'])
-            except:
-                pass
+            try: self.exec_string += str(val['value'])
+            except: pass
 
         return self.exec_string

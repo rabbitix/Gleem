@@ -1,54 +1,61 @@
-from Objects.varObject import VariableObject
+from Objects.varObject     import VariableObject
 from Objects.builtinObject import BuiltInFunctionObject
-from Objects.loopObject import LoopObject
+from Objects.loopObject    import LoopObject
 from Objects.commentObject import CommentObject
-
 
 class ConditionObject():
 
     def __init__(self, ast, nesting_count):
-        # The ast will hold the dictionary version of the ast which is a copy somehow
+        # The ast will hold the dictionary version of the ast which is like a blueprint
         self.ast = ast['ConditionalStatement']
         # This will hold the exec string for variable decleration
         self.exec_string = ""
-        # This is to handle the nesting indentation ===>تودرتو!
+        # This is to handle the nesting indentation
         self.nesting_count = nesting_count
 
-    def translate(self):
-        # This method will use the AST in order to create a python version of the gleem
+
+    def transpile(self):
+        """ Transpile 
+        
+        This method will use the AST in order to create a python version of the gleem
+        generated dictionary AST.
+
+        return:
+            exec_string (str) : The python transpiled code
+        """
+
         # Loop through each ast value list items
-        for value in self.ast:
+        for val in self.ast:
 
             # Get the first comparison value
-            try:
-                self.exec_string += "if " + str(value['value1']) + " "
-            except Exception:
-                pass
+            try: self.exec_string += "if " + str(val['value1']) + " "
+            except: pass
 
             # Get the comparison type
-            try:
-                self.exec_string += value['comparison_type'] + " "
-            except Exception:
-                pass
+            try: self.exec_string += val['comparison_type'] + " "
+            except: pass
 
             # Get the second comparison valie
-            try:
-                self.exec_string += str(value['value2']) + ": \n"
-            except Exception:
-                pass
+            try: self.exec_string += str(val['value2']) + ": \n"
+            except: pass
 
             # Get the body of the conditional statement
-            try:
-                self.exec_string += self.translate_body(value['body'], self.nesting_count)
-            except Exception:
-                pass
-
+            try: self.exec_string += self.transpile_body(val['body'], self.nesting_count)
+            except: pass
+        
         return self.exec_string
 
-    def translate_body(self, body_ast, nesting_count):
 
-        # This method will use the body AST to create a python version of gleem
-        # it'll create code for the body statement while managing indentations in nesting statments
+    def transpile_body(self, body_ast, nesting_count):
+        """ Transpile Body
+        
+        This method will use the body AST in order to create a python version of the gleem
+        code for the body statement while managing indentations
+
+        return:
+            body_exec_string (str) : The python transpiled code
+        """
+        
         # Holds the body executable string of the first statement
         body_exec_string = ""
 
@@ -58,7 +65,7 @@ class ConditionObject():
             # This will parse variable declerations within the body
             if self.check_ast('VariableDecleration', ast):
                 var_obj = VariableObject(ast)
-                transpile = var_obj.translate()
+                transpile = var_obj.transpile()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -67,7 +74,7 @@ class ConditionObject():
             # This will parse built-in within the body
             if self.check_ast('PrebuiltFunction', ast):
                 gen_builtin = BuiltInFunctionObject(ast)
-                transpile = gen_builtin.translate()
+                transpile = gen_builtin.transpile()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -76,7 +83,7 @@ class ConditionObject():
             # This will parse comments within the body
             if self.check_ast('Comment', ast):
                 gen_comment = CommentObject(ast)
-                transpile = gen_comment.translate()
+                transpile = gen_comment.transpile()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -91,12 +98,12 @@ class ConditionObject():
                 # Create conditional statement exec string
                 condition_obj = ConditionObject(ast, nesting_count)
                 # The second nested statament only needs 1 indent not 2
-                if nesting_count is 2:
+                if nesting_count == 2: 
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += "   " + condition_obj.translate()
-                else:
+                    body_exec_string += "   " + condition_obj.transpile()
+                else: 
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.translate()
+                    body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.transpile()
 
             # This will parse nested conditional statement within the body
             if self.check_ast('ForLoop', ast):
@@ -106,73 +113,95 @@ class ConditionObject():
                     nesting_count += 1
                 # Create conditional statement exec string
                 loop_obj = LoopObject(ast, nesting_count)
-                body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.translate()
-
+                body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.transpile()
+        
         return body_exec_string
 
+    
     def check_ast(self, astName, ast):
-
-        # This method will check if the AST dictionary item being looped through has the
-        # same key name as the `astName` argument
-
+        """ Call and Set Exec 
+        
+        This method will check if the AST dictionary item being looped through has the
+        same key name as the `astName` argument
+        
+        args:
+            astName (str)  : This will hold the ast name we are matching
+            ast     (dict) : The dict which the astName match will be done against
+        returns:
+            True    (bool) : If the astName matches the one in `ast` arg
+            False   (bool) : If the astName doesn't matches the one in `ast` arg
+        """
         try:
-            if ast[astName] is []:
-                return True
-            if ast[astName]:
-                return True
-        except Exception:
-            return False
+            # In some cases when method is called from should_Dedent_trailing metho ast
+            # comes back with corret key but empty list value because it is removed. If
+            # this is removed this method returns None instead and causes condition trailing
+            # code to be indented one more than it should
+            if ast[astName] == []: return True
+            if ast[astName]: return True
+        except: return False
+
+
 
     def should_dedent_trailing(self, ast, full_ast):
+        """ Should dedent trailing 
+        
+        This method will check if the ast item being checked is outside a conditional statement e.g.
 
-        # This method will check if the ast item being checked is outside a conditional statement for example
-        #
-        # if a == 11 {
-        #     if name == "Alex" {
-        #         print "Not it";
-        #     }
-        #     print "Hi"; <--- This is the code that should be dedented by 1
-        #     so when found will return true if dedent flag is true
-        # }
-        #
-        #
-        # it will return
-        #     True  : If the code should not be indented because it is in current scope below current nested condition
-        #     False : The item should not be dedented
-
+        if a == 11 {
+            if name == "gleem" {
+                print "Not it";
+            }
+            print "Hi"; <--- This is the code that should be dedented by 1 so when found will return true if dedent flag is true
+        }
+        
+        args:
+            ast       (list) : The ConditionalStatement ast we are looking for 
+            full_ast  (list) : The full ast being parsed
+        return:
+            True  : If the code should not be indented because it is in current scope below current nested condition
+            False : The item should not be dedented 
+        """
+        
         # This creates an array of only body elements
         new_ast = full_ast[3]['body']
         # This will know whether it should dedent
         dedent_flag = False
 
-        # Loop through body ast's and when a conditonal statement is founds set
+        # Loop through body ast's and when a conditonal statement is founds set 
         # the dedent flag to 'true'
         for x in new_ast:
-
+            
             # When a conditional stateemenet AST is found set the dedent trailing to true
             if self.check_ast('ConditionalStatement', x):
                 dedent_flag = True
 
-            if ast is x and dedent_flag is True:
+            if ast == x and dedent_flag == True:
                 return True
 
         return False
 
+
     def should_increment_nest_count(self, ast, full_ast):
+        """ Should dedent trailing 
+        
+        This method will check if the ast item being checked is outside a conditional statement e.g.
 
-        # This method will check if the ast item being checked is outside a conditional statement for example
-
-        # if a == 11 {
-        #     if name == "alex" {
-        #         print "Not it";
-        #     }
-        #     if 1 != 2 { <--- This is the statement that should not be nested more
-        #         print "Yo"
-        #     }
-        # }
-        #     will return :
-        #     True  : If the nesting should increase by 1
-        #     False : If the nesting should not be increased
+        if a == 11 {
+            if name == "gleem" {
+                print "Not it";
+            }
+            if 1 != 2 { <--- This is the statement that should not be nested more
+                print "Yo"
+            }
+        }
+        
+        args:
+            ast       (list) : The ConditionalStatement ast we are looking for 
+            full_ast  (list) : The full ast being parsed
+        return:
+            True  : If the nesting should increase by 1
+            False : If the nesting ahould not be increased
+        """
 
         # Counts of the number of statements in that one scope
         statement_counts = 0
@@ -181,15 +210,11 @@ class ConditionObject():
         for x in full_ast[3]['body']:
 
             # If a statement is found then increment statement count variable value by 1
-            if self.check_ast('ConditionalStatement', x):
-                statement_counts += 1
+            if self.check_ast('ConditionalStatement', x): statement_counts += 1
             # If the statement being checked is the one found then break
-            if ast is x:
-                break
+            if ast == x: break
 
         # Return false if there were less then 1 statements
-        if statement_counts > 1:
-            return False
-        # Return true if there were more than 1 statements
-        else:
-            return True
+        if statement_counts > 1: return False
+        # Returen true if there were more than 1 statements
+        else: return True
