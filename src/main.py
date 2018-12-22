@@ -1,16 +1,87 @@
+#!/usr/local/bin/python3
+# -*- coding: utf-8 -*- c
+
+import os
+import sys
 import lexer
 import parser
-
+import objgen
 
 def main():
-    content = ""
-    with open("syntax.lang", 'r') as file:
-        content = file.read()
+    
+    content  = ""           # This variable will hold the contents of the source code
+    path     = os.getcwd()  # Holds path this script was executed from
 
-    lex = lexer.Lexer(content)
-    tokens = lex.tokenize()
+    # Holds the name of the file the user wants to compile
+    try: fileName = sys.argv[1]
+    except:
+        print("[ERROR] Expected 1 Argument Containing File Name to be Run e.g 'gleem main.gl'")
+        return
 
-    parse = parser.Parser(tokens)
-    parse.parse()
+    # Check if the file extension is correct
+    if fileName[len(fileName) - 3:len(fileName)] != ".gl":
+        print("[ERROR] File extension not recognised please make sure extension is '.gl'")
+        return # quit programme
+
+    # Check to make sure that only one argument is passed
+    try:
+        print('[ERROR] Expected 1 argument found 2 (' + sys.argv[1] + ", " + sys.argv[2] + ')')
+        return # quit programme
+    except: pass
+
+    # Open source code file and get it's content and save it to the 'contents' var
+    try:
+        with open(path + "/" + fileName, "r") as file:
+            content = file.read()
+    except: 
+        print('Cannot find "' + fileName + '"')
+    
+    # --------------------------------------
+    #  LEXER
+    # --------------------------------------
+
+    print('|||||||||||||||||||||  LEXER LOG  ||||||||||||||||||||| \n')
+    # Create an instance of the lexer class
+    lex = lexer.Lexer()
+
+    # Call lexer method to perform lexical analysis on code
+    tokens = lex.tokenize(content)
+    print(tokens)
+    print('\n||||||||||||||||||||||||||||||||||||||||||||||||||||||| \n')
+
+    # --------------------------------------
+    #  PARSER
+    # --------------------------------------
+
+    print('|||||||||||||||||||||  PARSER LOG  |||||||||||||||||||| \n')
+    # Create an instance of the parser class
+    Parser = parser.Parser(tokens)
+
+    # Call the parser method and pass in the tokens as arguments
+    source_ast = Parser.parse(tokens)
+    print(source_ast)
+    print('\n||||||||||||||||||||||||||||||||||||||||||||||||||||||| \n')
+
+    # --------------------------------------
+    # Object Generation
+    # --------------------------------------
+
+    print('||||||||||||||||  OBJECT GENERATION LOG  ||||||||||||||| \n')
+    # Create an instance of the Object Generator (objgen) class
+    object_generator = objgen.ObjectGenerator(source_ast)
+
+    # Call the object definer to get python exec() string
+    exec_string = object_generator.object_definer(False)
+    print('\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||| \n')
+
+    # Execute the gleem code that has been transpiled to python code to get output
+    print('|||||||||||||||||||  TRANSPILED CODE  |||||||||||||||||| \n')
+    print(exec_string)
+    print('\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||| \n')
+
+    print('|||||||||||||||||||||||  OUTPUT  ||||||||||||||||||||||| \n')
+    exec(exec_string)
+    print('\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||| \n')
 
 main()
+
