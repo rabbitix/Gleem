@@ -120,7 +120,7 @@ class LoopObject(object):
                     nesting_count += 1
                 # Create conditional statement exec string
                 condition_obj = Objects.conditionObject.ConditionObject(ast, nesting_count)
-                body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.transpile()
+                body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.translate()
 
             # This will parse nested conditional statement within the body
             if self.check_ast('ForLoop', ast):
