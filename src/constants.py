@@ -1,26 +1,3 @@
-# all reserved keywords place here!
-
-# TODO add instagram sutiable datatypes and keywords
-# like [user,password,
-
-KEYWORDS = [
-    "print",
-    "for",
-    "if",
-    "else",
-    "function",
-    "int",
-    "str",
-    "bool",
-    "False",
-    "True",
-    "null"
-]
+KEYWORDS = ["function", "class", "if", "for", "else", "True", "False", "nil", "print", "bool", "int", "str"]
 BUILT_IN_FUNCTIONS = ["print"]
-
-DATA_TYPE = [
-    "int",
-    "str",
-    "bool",
-    "null"
-]
+DATATYPE = ["bool", "int", "str"]
