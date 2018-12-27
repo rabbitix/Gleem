@@ -11,7 +11,7 @@ class BodyObject(object):
         self.astName = astName
         self.ast = ast
 
-    def transpile_body(self, body_ast, nesting_count):
+    def translate_body(self, body_ast, nesting_count):
         """ Transpile Body
 
         This method will use the body AST in order to create a python version of the gleem
@@ -30,8 +30,8 @@ class BodyObject(object):
             # This will parse variable declerations within the body
             if self.check_ast('VariableDecleration', ast):
                 var_obj = VariableObject(ast)
-                transpile = var_obj.transpile()
-                if self.should_dedent_trailing(ast, self.ast):
+                transpile = var_obj.translate()
+                if self.should_dedent_trailing(ast=ast, full_ast=self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
                     body_exec_string += ("   " * nesting_count) + transpile + "\n"
@@ -53,8 +53,8 @@ class BodyObject(object):
                     nesting_count += 1
                 # Create conditional statement exec string
                 condition_obj = Objects.conditionObject.ConditionObject(ast, nesting_count)
-                # The second nested statament only needs 1 indent not 2
-                if nesting_count == 2:
+                # The second nested statement only needs 1 indent not 2
+                if nesting_count is 2:
                     # Add the content of conditional statement with correct indentation
                     body_exec_string += "   " + condition_obj.transpile()
                 else:
@@ -70,7 +70,7 @@ class BodyObject(object):
                 # Create conditional statement exec string
                 loop_obj = Objects.loopObject.LoopObject(ast, nesting_count)
                 # The second nested statament only needs 1 indent not 2
-                if nesting_count == 2:
+                if nesting_count is 2:
                     # Add the content of conditional statement with correct indentation
                     body_exec_string += "   " + loop_obj.transpile()
                 else:
@@ -97,7 +97,7 @@ class BodyObject(object):
             # comes back with corret key but empty list value because it is removed. If
             # this is removed this method returns None instead and causes condition trailing
             # code to be indented one more than it should
-            if ast[astName] == []: return True
+            if ast[astName] is []: return True
             if ast[astName]: return True
         except:
             return False
@@ -134,7 +134,7 @@ class BodyObject(object):
             if self.check_ast(self.astName, x):
                 dedent_flag = True
 
-            if ast == x and dedent_flag == True:
+            if ast is x and dedent_flag is True:
                 return True
 
         return False
@@ -170,11 +170,12 @@ class BodyObject(object):
             # If a statement is found then increment statement count variable value by 1
             if self.check_ast(self.astName, x): statement_counts += 1
             # If the statement being checked is the one found then break
-            if ast == x: break
+            if ast is x:
+                break
 
         # Return false if there were less then 1 statements
         if statement_counts > 1:
             return False
-        # Returen true if there were more than 1 statements
+        # Return true if there were more than 1 statements
         else:
             return True
