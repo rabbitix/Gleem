@@ -1,5 +1,6 @@
 import lexer
 import constant
+import objgen
 import parser
 txt =""
 with open('syntax.gl', 'r') as source_code:
