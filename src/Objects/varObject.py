@@ -1,5 +1,3 @@
-
-
 class VariableObject():
 
     def __init__(self, ast):
@@ -8,8 +6,7 @@ class VariableObject():
         # This will hold the exec string for variable decleration
         self.exec_string = ""
 
-    
-    def transpile(self):
+    def translate(self):
         """ Transpile 
         
         This method will use the AST in order to create a python version of the gleem
@@ -18,16 +15,20 @@ class VariableObject():
         return:
             exec_string (str) : The python transpiled code
         """
-        
+
         # Loop through each dictionary value items
         for val in self.ast:
-            
+
             # Get the name of the variable
-            try: self.exec_string += val['name'] + " = "
-            except: pass
+            try:
+                self.exec_string += val['name'] + " = "
+            except:
+                pass
 
             # Get the value of the variable
-            try: self.exec_string += str(val['value'])
-            except: pass
+            try:
+                self.exec_string += str(val['value'])
+            except:
+                pass
 
         return self.exec_string
