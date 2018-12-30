@@ -1,5 +1,3 @@
-
-
 class BuiltInFunctionObject():
 
     def __init__(self, ast):
@@ -8,8 +6,7 @@ class BuiltInFunctionObject():
         # This will hold the exec string being formed
         self.exec_string = ""
 
-
-    def transpile(self):
+    def translate(self):
         """ Transpile 
         
         This method will use the AST in order to create a python version of the gleem
@@ -18,17 +15,20 @@ class BuiltInFunctionObject():
         return:
             exec_string (str) : The python transpiled code
         """
-        
+
         for ast in self.ast:
-            
+
             # Get the name of the builtin function being called
             try:
                 if ast['type'] == "print":
                     self.exec_string += "print("
-            except: pass
+            except:
+                pass
 
             # Get arguments for the function being called
-            try: self.exec_string += ast['arguments'][0] + ")"
-            except: pass
+            try:
+                self.exec_string += ast['arguments'][0] + ")"
+            except:
+                pass
 
         return self.exec_string
