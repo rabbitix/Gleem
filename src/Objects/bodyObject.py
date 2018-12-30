@@ -39,7 +39,7 @@ class BodyObject(object):
             # This will parse built-in within the body
             if self.check_ast('PrebuiltFunction', ast):
                 gen_builtin = BuiltInFunctionObject(ast)
-                transpile = gen_builtin.transpile()
+                transpile = gen_builtin.translate()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -56,10 +56,10 @@ class BodyObject(object):
                 # The second nested statement only needs 1 indent not 2
                 if nesting_count is 2:
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += "   " + condition_obj.transpile()
+                    body_exec_string += "   " + condition_obj.translate()
                 else:
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.transpile()
+                    body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.translate()
 
             # This will parse nested conditional statement within the body
             if self.check_ast('ForLoop', ast):
@@ -69,13 +69,13 @@ class BodyObject(object):
                     nesting_count += 1
                 # Create conditional statement exec string
                 loop_obj = Objects.loopObject.LoopObject(ast, nesting_count)
-                # The second nested statament only needs 1 indent not 2
+                # The second nested statement only needs 1 indent not 2
                 if nesting_count is 2:
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += "   " + loop_obj.transpile()
+                    body_exec_string += "   " + loop_obj.translate()
                 else:
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.transpile()
+                    body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.translate()
 
         return body_exec_string
 
