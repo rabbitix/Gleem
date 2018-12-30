@@ -36,18 +36,26 @@ class Comp(object):
         all = []
         username = ""
         password = ""
-
         all = values.split()
-        target_username = ""
-
         # if all[0] is "User":
         username = all[1]
         # if all[2] is "Password":
         password = all[3]
         # if all[4] is "Start":
         # obj = IGram(username, password)
+
+        index = 5
+        while index < len(all):
+            if all[index] == constant.DATATYPE[0] or all[index] == constant.DATATYPE[1]:
+                print("should do like last post function ")
+            if all[index] == 'FOLLOW':
+                print("should do follow function")
+
+            index += 1
+        # target_username = ""
+
         # if all[5] is "like_last_post":
-        target_username = all[6]
+        # target_username = all[6]
         # obj.like_last_post(username=target_username)
 
         print('s')
