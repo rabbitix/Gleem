@@ -45,9 +45,11 @@ class Comp(object):
 
         index = 5
         while index < len(all):
-            if all[index] == DATATYPE[0] or all[index] == DATATYPE[1]:
+            if all[index] in DATATYPE["likeLastPostIdentifier"]:
                 print("should do like last post function ")
-            if all[index] == 'FOLLOW':
+            if all[index] in DATATYPE["FollowIdentifier"]:
                 print("should do follow function")
+            if all[index] in DATATYPE["LikeIdentifier"]:
+                print(" should do liking function")
 
             index += 1
