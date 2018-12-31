@@ -32,17 +32,30 @@ class Comp(object):
         self.values += value + ' '
         return self.values
 
+    def error(self, msgtxt=None):
+        print("============ ERROR ============")
+        print(msgtxt)
+        print("===============================")
+
     def compile(self, values):
         all = []
         username = ""
         password = ""
         all = values.split()
-        # if all[0] is "User":
-        username = all[1]
-        # if all[2] is "Password":
-        password = all[3]
-        # if all[4] is "Start":
-        # obj = IGram(username, password)
+        if all[0] in constant.KEYWORDS["UserIdentifier"]:
+            username = all[1]
+        else:
+            self.error("your syntax should start with init the user")
+            quit()
+        if all[2] in constant.KEYWORDS["PasswordIdentifier"]:
+            password = all[3]
+        else:
+            self.error("after identifying user, you should pass the password! ")
+
+        if all[4] in constant.KEYWORDS["StartIdentifier"]:
+            obj = IGram(username, password)
+        else:
+            self.error("can you ride a car without starting it?!")
 
         index = 5
         while index < len(all):

@@ -10,5 +10,4 @@ DATATYPE = {
     "LikeIdentifier": ["Like"],
 }
 
-
 # TODO make it non case sensetive
