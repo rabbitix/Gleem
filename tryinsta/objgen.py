@@ -4,7 +4,7 @@ from InstagramAPI import InstagramAPI
 import time
 
 
-class IGram:
+class IGram: # class for instagram part
     def __init__(self, username=None, password=None):
         if username:
             self.ig = InstagramAPI(username, password)
@@ -25,7 +25,6 @@ class IGram:
 
 class Comp(object):
     def __init__(self):
-        # self.exe_string = ""
         self.values = ""
 
     def translate(self, token_type=None, operation=None, value=None):
@@ -42,20 +41,27 @@ class Comp(object):
         username = ""
         password = ""
         all = values.split()
+        # check that start of the file works well!
+
+
         if all[0] in KEYWORDS["UserIdentifier"]:
             username = all[1]
         else:
             self.error("your syntax should start with init the user")
             quit()
+
         if all[2] in KEYWORDS["PasswordIdentifier"]:
             password = all[3]
         else:
             self.error("after identifying user, you should pass the password! ")
+            quit()
 
         if all[4] in KEYWORDS["StartIdentifier"]:
             obj = IGram(username, password)
         else:
             self.error("can you ride a car without starting it?!")
+            quit()
+
 
         index = 5
         while index < len(all):
@@ -65,10 +71,3 @@ class Comp(object):
                 print("should do follow function")
 
             index += 1
-        # target_username = ""
-
-        # if all[5] is "like_last_post":
-        # target_username = all[6]
-        # obj.like_last_post(username=target_username)
-
-        print('s')
