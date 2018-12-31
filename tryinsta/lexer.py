@@ -1,5 +1,5 @@
 import re  # for performing regex expressions
-import constant  # for constants like gleem keywords and datatypes
+from constant import *
 
 
 class Lexer(object):
@@ -84,22 +84,25 @@ class Lexer(object):
                 pass
 
             # Identify all of the Data Types
-            elif word in constant.DATATYPE:
+            elif word in DATATYPE["likeLastPostIdentifier"] or \
+                    word in DATATYPE["FollowIdentifier"] or \
+                    word in DATATYPE["LikeIdentifier"]:
                 tokens.append(["DATATYPE", word])
 
             # Identify all the indentifiers which are all in 'KEYWWORDS' const
-            elif word in constant.KEYWORDS:
+            elif word in KEYWORDS["UserIdentifier"] or \
+                    word in KEYWORDS["PasswordIdentifier"] or \
+                    word in KEYWORDS["StartIdentifier"]:
                 tokens.append(["KEYWORD", word])
 
             # Identify all custom identifers like variable names in source code
-            elif word in "~!@#$%^&*()"or re.match(".*[a-z]", word) or re.match("[A-Z]", word):
+            elif word in "~!@#$%^&*()" or re.match(".*[a-z]", word) or re.match("[A-Z]", word):
                 if word[len(word) - 1] != ';':
                     tokens.append(["IDENTIFIER", word])
                 else:
                     tokens.append(["IDENTIFIER", word[0:len(word) - 1]])
 
             # Identify all comparison symbols in source code
-
 
             # Identifies a comment defenition e.g. "// this is a comment \\"
             elif word == "($$" or word == "$$)":
