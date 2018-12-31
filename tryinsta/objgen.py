@@ -38,11 +38,14 @@ class Comp(object):
                 quit()
             # check for `start` keyword
             if all[4] in KEYWORDS["StartIdentifier"]:
-                igobj = instagram.IGram(username, password)
+                print("should start here!")
+                # igobj = instagram.IGram(username, password)
             else:
                 self.error("can you ride a car without starting it?!")
                 quit()
-
+        else:
+            self.error("you didnt use the correct structure for the start of the syntax")
+            quit()
         index = 5
         while index < len(all):
             if all[index] in DATATYPE["likeLastPostIdentifier"]:
