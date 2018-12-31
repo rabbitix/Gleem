@@ -19,3 +19,8 @@ class IGram:  # class for instagram part
         user_posts = self.ig.getTotalUserFeed(usernameId=user_id)
         last_media_id = user_posts[0]['id']
         self.ig.like(last_media_id)
+
+    def follow_user(self, username):
+        self.ig.searchUsername(username)
+        user_id = self.ig.LastJson['user']['pk']
+        self.ig.follow(user_id)
