@@ -12,7 +12,7 @@ class Parser(object):
         while self.token_index < len(self.tokens):
             token_type = self.tokens[self.token_index][0]
             token_value = self.tokens[self.token_index][1]
-            print('----------------------------[ ', token_type, token_value, ' ]----------------------------')
+            print('----------------------------[ '+ token_type, token_value+ ' ]----------------------------')
             self.vals = com.translate(value=token_value)
             self.token_index += 1
 
