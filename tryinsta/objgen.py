@@ -1,26 +1,5 @@
 from constant import *
-
-from InstagramAPI import InstagramAPI
-import time
-
-
-class IGram: # class for instagram part
-    def __init__(self, username=None, password=None):
-        if username:
-            self.ig = InstagramAPI(username, password)
-            self.ig.login()
-        else:
-            pass
-
-    def start(self):
-        pass
-
-    def like_last_post(self, username=None):
-        self.ig.searchUsername(username)
-        user_id = self.ig.LastJson['user']['pk']
-        user_posts = self.ig.getTotalUserFeed(usernameId=user_id)
-        last_media_id = user_posts[0]['id']
-        self.ig.like(last_media_id)
+import instagram
 
 
 class Comp(object):
@@ -41,27 +20,28 @@ class Comp(object):
         username = ""
         password = ""
         all = values.split()
-        # check that start of the file works well!
-
-
-        if all[0] in KEYWORDS["UserIdentifier"]:
-            username = all[1]
-        else:
-            self.error("your syntax should start with init the user")
-            quit()
-
-        if all[2] in KEYWORDS["PasswordIdentifier"]:
-            password = all[3]
-        else:
-            self.error("after identifying user, you should pass the password! ")
-            quit()
-
-        if all[4] in KEYWORDS["StartIdentifier"]:
-            obj = IGram(username, password)
-        else:
-            self.error("can you ride a car without starting it?!")
-            quit()
-
+        # check that start of the file works well! and is what we want
+        if all[0] in KEYWORDS["UserIdentifier"] and \
+                all[2] in KEYWORDS["PasswordIdentifier"] and\
+                all[4] in KEYWORDS["StartIdentifier"]:
+            # check for `user` keyword
+            if all[0] in KEYWORDS["UserIdentifier"]:
+                username = all[1]
+            else:
+                self.error("your syntax should start with init the user")
+                quit()
+            # check for `password` keyword
+            if all[2] in KEYWORDS["PasswordIdentifier"]:
+                password = all[3]
+            else:
+                self.error("after identifying user, you should pass the password! ")
+                quit()
+            # check for `start` keyword
+            if all[4] in KEYWORDS["StartIdentifier"]:
+                igobj = instagram.IGram(username, password)
+            else:
+                self.error("can you ride a car without starting it?!")
+                quit()
 
         index = 5
         while index < len(all):
