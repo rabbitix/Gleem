@@ -1,4 +1,4 @@
-import constant
+from constant import *
 
 from InstagramAPI import InstagramAPI
 import time
@@ -42,24 +42,24 @@ class Comp(object):
         username = ""
         password = ""
         all = values.split()
-        if all[0] in constant.KEYWORDS["UserIdentifier"]:
+        if all[0] in KEYWORDS["UserIdentifier"]:
             username = all[1]
         else:
             self.error("your syntax should start with init the user")
             quit()
-        if all[2] in constant.KEYWORDS["PasswordIdentifier"]:
+        if all[2] in KEYWORDS["PasswordIdentifier"]:
             password = all[3]
         else:
             self.error("after identifying user, you should pass the password! ")
 
-        if all[4] in constant.KEYWORDS["StartIdentifier"]:
+        if all[4] in KEYWORDS["StartIdentifier"]:
             obj = IGram(username, password)
         else:
             self.error("can you ride a car without starting it?!")
 
         index = 5
         while index < len(all):
-            if all[index] == constant.DATATYPE[0] or all[index] == constant.DATATYPE[1]:
+            if all[index] == DATATYPE[0] or all[index] == DATATYPE[1]:
                 print("should do like last post function ")
             if all[index] == 'FOLLOW':
                 print("should do follow function")
