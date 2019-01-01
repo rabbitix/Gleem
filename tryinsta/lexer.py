@@ -85,15 +85,17 @@ class Lexer(object):
                 pass
 
             # Identify all of the Data Types
-            elif word in DATATYPE["likeLastPostIdentifier"] or \
-                    word in DATATYPE["FollowIdentifier"] or \
-                    word in DATATYPE["LikeIdentifier"]:
+            # elif word in DATATYPE["likeLastPostIdentifier"] or \
+            #         word in DATATYPE["FollowIdentifier"] or \
+            #         word in DATATYPE["LikeIdentifier"]:
+            elif word in data_type:
                 tokens.append(["DATATYPE", word])
 
             # Identify all the identifiers which are all in 'KEYWORDS' const dict
-            elif word in KEYWORDS["UserIdentifier"] or \
-                    word in KEYWORDS["PasswordIdentifier"] or \
-                    word in KEYWORDS["StartIdentifier"]:
+            # elif word in KEYWORDS["UserIdentifier"] or \
+            #         word in KEYWORDS["PasswordIdentifier"] or \
+            #         word in KEYWORDS["StartIdentifier"]:
+            elif word in key_words:
                 tokens.append(["KEYWORD", word])
 
             # Identify all custom identifiers like variable names in source code
