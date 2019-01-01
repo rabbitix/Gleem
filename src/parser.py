@@ -91,11 +91,11 @@ class Parser(object):
                 # Get the tokens before the first sperator '::'
                 var_decl_tokens = self.get_token_to_matcher("::", '{', token_stream[tokens_checked:len(token_stream)])
 
-                # Perform error handling to see if the tokens could be fetched and the seperator '::' was found
+                # Perform show_error handling to see if the tokens could be fetched and the seperator '::' was found
                 if var_decl_tokens == False:
                     self.send_error_message("Loop missing seperator '::'", token_stream)
 
-                # Manually append statement end to the end of the var decleration so var parser behaves and doesnt throw error
+                # Manually append statement end to the end of the var decleration so var parser behaves and doesnt throw show_error
                 var_decl_tokens[0].append(['STATEMENT_END', ';'])
                 var_parsing = self.variable_decleration_parsing(var_decl_tokens[0], True)
                 # Append initialValueName property to the ForLoop AST
@@ -262,7 +262,7 @@ class Parser(object):
                         value_list_func_call = self.form_value_list(token_stream[tokens_checked:len(token_stream)])
                         print(value_list_func_call)
 
-            # This will throw an error if argument passed in is not a permitted token type 
+            # This will throw an show_error if argument passed in is not a permitted token type
             elif token == 1 and token_stream[token][0] not in ['INTEGER', 'STRING', 'IDENTIFIER']: 
                 self.send_error_message("Invalid argument type of %s expected string, identifier or primitive data type" % token_stream[token][0], 
                                               token_stream[0:tokens_checked + 1])
@@ -299,7 +299,7 @@ class Parser(object):
             # Skip the '=' operator in var decl
             if x == 2 and token_type == "OPERATOR" and token_value == "=":
                 pass
-            # This will handle error detection for making sure the '=' is found
+            # This will handle show_error detection for making sure the '=' is found
             if x == 2 and token_type != "OPERATOR" and token_value != "=":
                 self.send_error_message("Variable Decleration Missing '='.", self.token_stream[self.token_index:self.token_index + tokens_checked + 2])
 
@@ -312,7 +312,7 @@ class Parser(object):
             # This will parse the second token which will be the name of the var
             if x == 1 and token_type == "IDENTIFIER":
                 
-                # Check if a variable has already been named the same and is so send an error
+                # Check if a variable has already been named the same and is so send an show_error
                 if self.get_variable_value(token_value) != False:
                     self.send_error_message("Variable '%s' already exists and cannot be defined again!" % token_value, self.token_stream[self.token_index:self.token_index + tokens_checked + 1])
                 else:
@@ -352,7 +352,7 @@ class Parser(object):
                 value_list = value_list_func_call[0]
                 tokens_checked += value_list_func_call[1]
 
-                # Call the equation parser and append value returned or try concat parser if an error occurs
+                # Call the equation parser and append value returned or try concat parser if an show_error occurs
                 try: 
                     ast['VariableDecleration'].append({ "value": self.equation_parser(value_list)})
                 except:
@@ -364,7 +364,7 @@ class Parser(object):
 
             tokens_checked += 1  # Indent within overall for loop
 
-        # Last case error validation checking if all needed var decl elements are in the ast such as:
+        # Last case show_error validation checking if all needed var decl elements are in the ast such as:
         # var type, name and value
         try: ast['VariableDecleration'][0] 
         except: self.send_error_message("Invalid variable decleration could not set variable type!", self.token_stream[self.token_index:self.token_index + tokens_checked] )
@@ -614,7 +614,7 @@ class Parser(object):
             concatenation_list (list) : Array with all items needed seperated to perform concatenation
         return:
             value (string)            : Full string after concatenation done
-            error (list)              : Return False with an error message in a list
+            show_error (list)              : Return False with an show_error message in a list
         """
 
         full_string = ""
@@ -671,12 +671,12 @@ class Parser(object):
     def get_variable_value(self, name):
         """ Get Variable Value
         This will get the value of a variable from the symbol tree and return the value
-        if the variable exists or an error if it doesn't
+        if the variable exists or an show_error if it doesn't
         args:
             name (string)  : The name which we will search for in symbol tree
         returns:
             value (string) : The value of the variable if it is found
-            error (bool)   : Sends back False if it was not found
+            show_error (bool)   : Sends back False if it was not found
         """
 
         for var in self.symbol_tree:
@@ -700,11 +700,11 @@ class Parser(object):
 
     def send_error_message(self, msg, error_list):
         """ Send Error Messages
-        This will simply send all the found error messages within the source code
-        and return a list of error messages and tokens of which part of the source code
-        caused that error
+        This will simply send all the found show_error messages within the source code
+        and return a list of show_error messages and tokens of which part of the source code
+        caused that show_error
         args:
-            error_list (list) : List with error message and tokens
+            error_list (list) : List with show_error message and tokens
         """
 
         print("------------------------ ERROR FOUND ----------------------------")

@@ -13,6 +13,7 @@ DATATYPE = {
 # TODO make it non case sensetive
 
 # TODO Ideas to add later:
-    # follow this list
-    # unfollow!
-    # comment (maybe hard!)
+# follow this list
+# unfollow!
+# comment (maybe hard!)
+# fetch user photo

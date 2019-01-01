@@ -5,6 +5,7 @@ class Parser(object):
     def __init__(self, tokens):
         self.tokens = tokens
         self.token_index = 0
+        self.all_tokens = ""
 
     def parse(self):
         com = objgen.Comp()
@@ -13,7 +14,7 @@ class Parser(object):
             token_type = self.tokens[self.token_index][0]
             token_value = self.tokens[self.token_index][1]
             print('----------------------------[ ' + token_type, token_value + ' ]----------------------------')
-            self.vals = com.translate(value=token_value)
+            self.all_tokens = com.translate(value=token_value)
             self.token_index += 1
 
-        return self.vals
+        return self.all_tokens

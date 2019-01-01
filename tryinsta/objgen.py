@@ -10,7 +10,7 @@ class Comp(object):
         self.values += value + ' '
         return self.values
 
-    def error(self, msgtxt=None):
+    def show_error(self, msgtxt=None):
         print("\033[1;32;43m============ ERROR ============")
         print('\033[1;31;40m' + msgtxt)
         print("\033[1;32;430m===============================")
@@ -28,23 +28,23 @@ class Comp(object):
             if all[0] in KEYWORDS["UserIdentifier"]:
                 username = all[1]
             else:
-                self.error("your syntax should start with init the user")
+                self.show_error("your syntax should start with init the user")
                 quit()
             # check for `password` keyword
             if all[2] in KEYWORDS["PasswordIdentifier"]:
                 password = all[3]
             else:
-                self.error("after identifying user, you should pass the password! ")
+                self.show_error("after identifying user, you should pass the password! ")
                 quit()
             # check for `start` keyword
             if all[4] in KEYWORDS["StartIdentifier"]:
                 print("should start here!")
                 # igobj = instagram.IGram(username, password)
             else:
-                self.error("can you ride a car without starting it?!")
+                self.show_error("can you ride a car without starting it?!")
                 quit()
         else:
-            self.error("you didnt use the correct structure for the start of the syntax")
+            self.show_error("you didnt use the correct structure for the start of the syntax")
             quit()
         index = 5
         while index < len(all):
