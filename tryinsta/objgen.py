@@ -11,9 +11,9 @@ class Comp(object):
         return self.values
 
     def error(self, msgtxt=None):
-        print("============ ERROR ============")
-        print(msgtxt)
-        print("===============================")
+        print("\033[1;32;43m============ ERROR ============")
+        print('\033[1;31;40m' + msgtxt)
+        print("\033[1;32;430m===============================")
 
     def compile(self, values):
         all = []
@@ -22,7 +22,7 @@ class Comp(object):
         all = values.split()
         # check that start of the file works well! and is what we want
         if all[0] in KEYWORDS["UserIdentifier"] and \
-                all[2] in KEYWORDS["PasswordIdentifier"] and\
+                all[2] in KEYWORDS["PasswordIdentifier"] and \
                 all[4] in KEYWORDS["StartIdentifier"]:
             # check for `user` keyword
             if all[0] in KEYWORDS["UserIdentifier"]:
@@ -39,7 +39,7 @@ class Comp(object):
             # check for `start` keyword
             if all[4] in KEYWORDS["StartIdentifier"]:
                 print("should start here!")
-                igobj = instagram.IGram(username, password)
+                # igobj = instagram.IGram(username, password)
             else:
                 self.error("can you ride a car without starting it?!")
                 quit()
@@ -50,10 +50,10 @@ class Comp(object):
         while index < len(all):
             if all[index] in DATATYPE["likeLastPostIdentifier"]:
                 print("should do like last post function ")
-                igobj.like_last_post(all[index+1])
+                # igobj.like_last_post(all[index+1])
             if all[index] in DATATYPE["FollowIdentifier"]:
                 print("should do follow function")
-                igobj.follow_user(all[index+1])
+                # igobj.follow_user(all[index+1])
 
             if all[index] in DATATYPE["LikeIdentifier"]:
                 print(" should do liking function")
