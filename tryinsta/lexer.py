@@ -4,6 +4,7 @@ from constant import *
 
 class Lexer(object):
 
+    # this part is not going to use now.. if want to enable commenting later, we will use it
     def getMatcher(self, matcher, current_index, source_code):
         if source_code[current_index].count('"') == 2:
 
@@ -61,7 +62,7 @@ class Lexer(object):
             source_code (str) : This is the gleem source code to be tokenized
 
         Returns:
-            tokens (list) : It will return a lost of all the tokens
+            tokens (list) : It will return a list of all the tokens
         """
 
         # This will hold a record of all the tokens
@@ -89,13 +90,13 @@ class Lexer(object):
                     word in DATATYPE["LikeIdentifier"]:
                 tokens.append(["DATATYPE", word])
 
-            # Identify all the indentifiers which are all in 'KEYWWORDS' const
+            # Identify all the identifiers which are all in 'KEYWORDS' const dict
             elif word in KEYWORDS["UserIdentifier"] or \
                     word in KEYWORDS["PasswordIdentifier"] or \
                     word in KEYWORDS["StartIdentifier"]:
                 tokens.append(["KEYWORD", word])
 
-            # Identify all custom identifers like variable names in source code
+            # Identify all custom identifiers like variable names in source code
             elif word in "~!@#$%^&*()" or re.match(".*[a-z]", word) or re.match("[A-Z]", word):
                 if word[len(word) - 1] != ';':
                     tokens.append(["IDENTIFIER", word])
