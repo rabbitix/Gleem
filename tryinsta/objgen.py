@@ -11,9 +11,9 @@ class Comp(object):
         return self.values
 
     def show_error(self, msgtxt=None):
-        print("\033[1;32;43m============ ERROR ============")
-        print('\033[1;31;40m' + msgtxt)
-        print("\033[1;32;430m===============================")
+        print("\033[33m============ ERROR ============\033[0m")
+        print('\033[31m' + msgtxt )
+        print("\033[33m===============================\033[0m")
 
     def compile(self, values):
         all = []
