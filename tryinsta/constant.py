@@ -7,6 +7,7 @@ KEYWORDS = {
 DATATYPE = {
     "likeLastPostIdentifier": ["LikeLastPost", "like_last_post"],
     "FollowIdentifier": ["Follow"],
+    "UnFollowIdentifier": ["Unfollow"],
     "LikeIdentifier": ["Like"],
 }
 
@@ -17,6 +18,7 @@ key_words = ["User", "user",
 
 data_type = ["LikeLastPost", "like_last_post",
              "Follow",
+             "Unfollow",
              "Like"]
 
 # TODO make it non case sensetive
@@ -24,6 +26,6 @@ data_type = ["LikeLastPost", "like_last_post",
 
 # TODO Ideas to add later:
 # follow this list
-# unfollow!
+# unfollow!  -> done
 # comment (maybe hard!)
 # fetch user photo

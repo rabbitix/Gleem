@@ -47,6 +47,8 @@ class Comp(object):
             self.show_error("you didnt use the correct structure for the start of the syntax")
             quit()
         index = 5
+
+        # After pass first of syntax
         while index < len(all_vals):
             if all_vals[index] in DATATYPE["likeLastPostIdentifier"]:
                 print("should do like last post function ")
@@ -57,6 +59,11 @@ class Comp(object):
                 print("should do follow function")
                 index += 2
                 # igobj.follow_user(all_vals[index+1])
+
+            elif all_vals[index] in DATATYPE["UnFollowIdentifier"]:
+                print("should do unfollow function")
+                index += 2
+                # igobj.unfollow_user(all_vals[index+1])
 
             # if all_vals[index] in DATATYPE["LikeIdentifier"]:
             #     print(" should do liking function")
