@@ -97,7 +97,7 @@ class Lexer(object):
                 tokens.append(["KEYWORD", word])
 
             # Identify all custom identifiers like variable names in source code
-            elif word in "~!@#$%^&*()" or re.match(".*[a-z]", word) or re.match("[A-Z]", word):
+            elif word in "~!@#$%^&*()-" or re.match(".*[0-9]", word) or re.match(".*[a-z]", word) or re.match("[A-Z]", word):
                 if word[len(word) - 1] != ';':
                     tokens.append(["IDENTIFIER", word])
                 else:
