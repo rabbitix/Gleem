@@ -55,7 +55,7 @@ class Comp(object):
                 print("should do follow function")
                 # igobj.follow_user(all[index+1])
 
-            if all[index] in DATATYPE["LikeIdentifier"]:
-                print(" should do liking function")
+            # if all[index] in DATATYPE["LikeIdentifier"]:
+            #     print(" should do liking function")
 
             index += 1
