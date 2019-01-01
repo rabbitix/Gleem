@@ -5,6 +5,12 @@ import os
 import sys
 
 
+def pretty_print(txt):
+    print("\n\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m")
+    print("\033[34m~~~~~~~~~~~~~~~~~~~~/ ",txt," /~~~~~~~~~~~~~~~~~~~~\033[0m")
+    print("\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m\n")
+
+
 def main():
     # content = ""  # the source code
     #
@@ -36,17 +42,21 @@ def main():
     # except:
     #     print('Cannot find "' + fileName + '"')
 
-    txt = ""
+    content = ""
     with open('syntax.gl', 'r') as source_code:
-        txt = source_code.read()
+        content = source_code.read()
 
     lex = lexer.Lexer()
-    tokens = lex.tokenize(source_code=txt)
+    tokens = lex.tokenize(source_code=content)
+    pretty_print("LEXER LOG")
     for token in tokens:  # to print tokens in new lines
         print('\033[36m', token)
+
+    pretty_print("PARSER LOG")
     pars = parser.Parser(tokens=tokens)
     parsed = pars.parse()
 
+    pretty_print("OBJ PART")
     objectgen = objgen.Comp()
     objectgen.compile(parsed)
 
