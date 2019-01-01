@@ -5,12 +5,6 @@ import os
 import sys
 
 
-def pretty_print(txt):
-    print("\n\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m")
-    print("\033[34m~~~~~~~~~~~~~~~~~~~~/ ",txt," /~~~~~~~~~~~~~~~~~~~~\033[0m")
-    print("\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m\n")
-
-
 def main():
     # content = ""  # the source code
     #
@@ -48,15 +42,24 @@ def main():
 
     lex = lexer.Lexer()
     tokens = lex.tokenize(source_code=content)
-    pretty_print("LEXER LOG")
+
+    print("\n\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m")
+    print(  "\033[34m~~~~~~~~~~~~~~~~~~~/ LEXER LOG /~~~~~~~~~~~~~~~~~~~\033[0m")
+    print(  "\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m\n")
     for token in tokens:  # to print tokens in new lines
         print('\033[36m', token)
 
-    pretty_print("PARSER LOG")
+    print("\n\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m")
+    print("  \033[34m~~~~~~~~~~~~~~~~~~~/ PARSER LOG /~~~~~~~~~~~~~~~~~~\033[0m")
+    print("  \033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m\n")
+
     pars = parser.Parser(tokens=tokens)
     parsed = pars.parse()
 
-    pretty_print("OBJ PART")
+    print("\n\033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m")
+    print("  \033[34m~~~~~~~~~~~~~~~~~~~~/ OBJ PART /~~~~~~~~~~~~~~~~~~~\033[0m")
+    print("  \033[34m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\033[0m\n")
+
     objectgen = objgen.Comp()
     objectgen.compile(parsed)
 
