@@ -43,7 +43,7 @@ def main():
     lex = lexer.Lexer()
     tokens = lex.tokenize(source_code=txt)
     for token in tokens:  # to print tokens in new lines
-        print(token)
+        print('\033[36m', token)
     pars = parser.Parser(tokens=tokens)
     parsed = pars.parse()
 
