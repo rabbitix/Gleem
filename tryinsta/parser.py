@@ -19,9 +19,14 @@ class Parser(object):
             token_type = self.tokens[self.token_index][0]
             token_value = self.tokens[self.token_index][1]
             # Handel syntax error
+            # TODO add specific errors
             if self.token_index % 2 is 0:
                 if self.tokens[self.token_index][0] is "IDENTIFIER":
                     cc.show_error("Syntax Error")
+                    quit()
+            if self.token_index % 2 is 0:
+                if token_value not in data_type and token_value not in key_words:
+                    cc.show_error("syntax error")
                     quit()
 
             print('\033[35m----------------------------[ ' + token_type, token_value + ' ]----------------------------')
