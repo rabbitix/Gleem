@@ -31,7 +31,6 @@ class Parser(object):
 
             print('\033[35m----------------------------[ ' + token_type, token_value + ' ]----------------------------')
 
-
             self.all_tokens = com.translate(value=token_value)
             self.token_index += 1
 
