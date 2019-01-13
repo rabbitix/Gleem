@@ -8,7 +8,7 @@ class CommentObject():
 		self.exec_string = ""
 
 
-	def transpile(self):
+	def translate(self):
 		""" Transpile 
 		
 		This method will use the AST in order to create a python version of the gleem

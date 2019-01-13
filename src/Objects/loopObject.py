@@ -15,7 +15,7 @@ class LoopObject(object):
 		self.nesting_count = nesting_count
 
 
-	def transpile(self):
+	def translate(self):
 		""" Transpile 
 		
 		This method will use the AST in order to create a python version of the gleem
@@ -91,7 +91,7 @@ class LoopObject(object):
 			# This will parse variable declerations within the body
 			if self.check_ast('VariableDecleration', ast):
 				var_obj = VariableObject(ast)
-				transpile = var_obj.transpile()
+				transpile = var_obj.translate()
 				if self.should_dedent_trailing(ast, self.ast):
 					body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
 				else:
@@ -100,7 +100,7 @@ class LoopObject(object):
 			# This will parse built-in within the body
 			if self.check_ast('PrebuiltFunction', ast):
 				gen_builtin = BuiltInFunctionObject(ast)
-				transpile = gen_builtin.transpile()
+				transpile = gen_builtin.translate()
 				if self.should_dedent_trailing(ast, self.ast):
 					body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
 				else:
@@ -109,7 +109,7 @@ class LoopObject(object):
 			# This will parse comments within the body
 			if self.check_ast('Comment', ast):
 				gen_comment = CommentObject(ast)
-				transpile = gen_comment.transpile()
+				transpile = gen_comment.translate()
 				if self.should_dedent_trailing(ast, self.ast):
 					body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
 				else:
@@ -123,7 +123,7 @@ class LoopObject(object):
 					nesting_count += 1
 				# Create conditional statement exec string
 				condition_obj = Objects.conditionObject.ConditionObject(ast, nesting_count)
-				body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.transpile()
+				body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.translate()
 
 			# This will parse nested conditional statement within the body
 			if self.check_ast('ForLoop', ast):
@@ -136,10 +136,10 @@ class LoopObject(object):
 				# The second nested statament only needs 1 indent not 2
 				if nesting_count == 2: 
 					# Add the content of conditional statement with correct indentation
-					body_exec_string += "   " + loop_obj.transpile()
+					body_exec_string += "   " + loop_obj.translate()
 				else: 
 					# Add the content of conditional statement with correct indentation
-					body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.transpile()
+					body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.translate()
 		
 		return body_exec_string
 

@@ -74,7 +74,7 @@ class Lexer(object):
         # Current character position we are parsing
         source_index = 0
 
-        # Will loop through each word in
+        # Will loop through each word in source code
         while source_index < len(source_code):
 
             # This will be the word that is retrieved from source code

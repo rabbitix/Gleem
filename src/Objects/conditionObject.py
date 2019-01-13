@@ -14,7 +14,7 @@ class ConditionObject():
         self.nesting_count = nesting_count
 
 
-    def transpile(self):
+    def translate(self):
         """ Transpile 
         
         This method will use the AST in order to create a python version of the gleem
@@ -40,13 +40,13 @@ class ConditionObject():
             except: pass
 
             # Get the body of the conditional statement
-            try: self.exec_string += self.transpile_body(val['body'], self.nesting_count)
+            try: self.exec_string += self.translate_body(val['body'], self.nesting_count)
             except: pass
         
         return self.exec_string
 
 
-    def transpile_body(self, body_ast, nesting_count):
+    def translate_body(self, body_ast, nesting_count):
         """ Transpile Body
         
         This method will use the body AST in order to create a python version of the gleem
@@ -65,7 +65,7 @@ class ConditionObject():
             # This will parse variable declerations within the body
             if self.check_ast('VariableDecleration', ast):
                 var_obj = VariableObject(ast)
-                transpile = var_obj.transpile()
+                transpile = var_obj.translate()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -74,7 +74,7 @@ class ConditionObject():
             # This will parse built-in within the body
             if self.check_ast('PrebuiltFunction', ast):
                 gen_builtin = BuiltInFunctionObject(ast)
-                transpile = gen_builtin.transpile()
+                transpile = gen_builtin.translate()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -83,7 +83,7 @@ class ConditionObject():
             # This will parse comments within the body
             if self.check_ast('Comment', ast):
                 gen_comment = CommentObject(ast)
-                transpile = gen_comment.transpile()
+                transpile = gen_comment.translate()
                 if self.should_dedent_trailing(ast, self.ast):
                     body_exec_string += ("   " * (nesting_count - 1)) + transpile + "\n"
                 else:
@@ -100,10 +100,10 @@ class ConditionObject():
                 # The second nested statament only needs 1 indent not 2
                 if nesting_count == 2: 
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += "   " + condition_obj.transpile()
+                    body_exec_string += "   " + condition_obj.translate()
                 else: 
                     # Add the content of conditional statement with correct indentation
-                    body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.transpile()
+                    body_exec_string += ("   " * (nesting_count - 1)) + condition_obj.translate()
 
             # This will parse nested conditional statement within the body
             if self.check_ast('ForLoop', ast):
@@ -113,7 +113,7 @@ class ConditionObject():
                     nesting_count += 1
                 # Create conditional statement exec string
                 loop_obj = LoopObject(ast, nesting_count)
-                body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.transpile()
+                body_exec_string += ("   " * (nesting_count - 1)) + loop_obj.translate()
         
         return body_exec_string
 

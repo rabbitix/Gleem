@@ -29,3 +29,4 @@ class IGram:  # class for instagram part
         self.ig.searchUsername(username)
         user_id = self.ig.LastJson['user']['pk']
         self.ig.unfollow(user_id)
+        
