@@ -1,3 +1,5 @@
+import time
+
 KEYWORDS = {
     "UserIdentifier": ["User", "user"],
     "PasswordIdentifier": ["Password", "password"],
@@ -21,6 +23,7 @@ data_type = ["LikeLastPost", "like_last_post",
              "Unfollow",
              "Like"]
 
+
 # TODO make it non case sensetive
 
 
@@ -29,3 +32,10 @@ data_type = ["LikeLastPost", "like_last_post",
 # unfollow!  -> done
 # comment (maybe hard!)
 # fetch user photo
+
+
+def to_log(file, text):
+    tt = time.localtime(time.time())
+    now = "[{0}/{1}/{2} {3}:{4}:{5}] > ".format(tt.tm_year, tt.tm_mon, tt.tm_wday, tt.tm_hour, tt.tm_min, tt.tm_sec)
+    with open(file, "a") as log:
+        log.write(str(now) + str(text) + '\n')
