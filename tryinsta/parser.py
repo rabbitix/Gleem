@@ -23,6 +23,7 @@ class Parser(object):
             if self.token_index % 2 is 0:
                 if self.tokens[self.token_index][0] is "IDENTIFIER":
                     cc.show_error("Syntax Error")
+
                     quit()
             if self.token_index % 2 is 0:
                 if token_value not in data_type and token_value not in key_words:

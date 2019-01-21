@@ -4,6 +4,7 @@ import instagram
 
 class Comp(object):
     def __init__(self):
+        self.log_file = "def.txt"
         self.values = ""
 
     def translate(self, token_type=None, operation=None, value=None):
@@ -39,6 +40,8 @@ class Comp(object):
             # check for `start` keyword
             if all_vals[4] in KEYWORDS["StartIdentifier"]:
                 print("should start here!")
+                self.log_file = str(all_vals[5]) + ".txt"
+
                 # igobj = instagram.IGram(username, password)
             else:
                 self.show_error("can you ride a car without starting it?!")
@@ -46,22 +49,29 @@ class Comp(object):
         else:
             self.show_error("you didnt use the correct structure for the start of the syntax")
             quit()
-        index = 5
+        index = 6
+
+        to_log(self.log_file, "started new session")
+        to_log(self.log_file, "user name: {0}".format(username))
+        to_log(self.log_file, "password: {0}".format(password))
+        to_log(self.log_file, "started")
 
         # After pass first of syntax
         while index < len(all_vals):
             if all_vals[index] in DATATYPE["likeLastPostIdentifier"]:
-                print("should do like last post function ")
                 # igobj.like_last_post(all_vals[index+1])
+                to_log(self.log_file, "Liking last post of {0}".format(all_vals[index + 1]))
                 index += 2
 
             elif all_vals[index] in DATATYPE["FollowIdentifier"]:
-                print("should do follow function")
+                # print("should do follow function")
+                to_log(self.log_file, "Following user {0}".format(all_vals[index + 1]))
                 index += 2
                 # igobj.follow_user(all_vals[index+1])
 
             elif all_vals[index] in DATATYPE["UnFollowIdentifier"]:
-                print("should do unfollow function")
+                # print("should do unfollow function")
+                to_log(self.log_file, "Unfollow user {0}".format(all_vals[index + 1]))
                 index += 2
                 # igobj.unfollow_user(all_vals[index+1])
 
