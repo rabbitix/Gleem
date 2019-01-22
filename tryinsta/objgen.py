@@ -1,5 +1,6 @@
 from constant import *
 import instagram
+from random import randint
 
 
 class Comp(object):
@@ -22,27 +23,27 @@ class Comp(object):
         password = ""
         all_vals = values.split()
         # check that start of the file works well! and is what we want
-        if all_vals[0] in KEYWORDS["UserIdentifier"] and \
-                all_vals[2] in KEYWORDS["PasswordIdentifier"] and \
-                all_vals[4] in KEYWORDS["StartIdentifier"]:
+        if all_vals[2] in KEYWORDS["UserIdentifier"] and \
+                all_vals[4] in KEYWORDS["PasswordIdentifier"] and \
+                all_vals[0] in KEYWORDS["StartIdentifier"]:
             # check for `user` keyword
-            if all_vals[0] in KEYWORDS["UserIdentifier"]:
-                username = all_vals[1]
+            if all_vals[2] in KEYWORDS["UserIdentifier"]:
+                username = all_vals[3]
             else:
                 self.show_error("your syntax should start with init the user")
                 quit()
             # check for `password` keyword
-            if all_vals[2] in KEYWORDS["PasswordIdentifier"]:
-                password = all_vals[3]
+            if all_vals[4] in KEYWORDS["PasswordIdentifier"]:
+                password = all_vals[5]
             else:
                 self.show_error("after identifying user, you should pass the password! ")
                 quit()
             # check for `start` keyword
-            if all_vals[4] in KEYWORDS["StartIdentifier"]:
+            if all_vals[0] in KEYWORDS["StartIdentifier"]:
                 print("should start here!")
-                self.log_file = str(all_vals[5]) + ".txt"
+                self.log_file = str(all_vals[1]) + ".txt"
 
-                # igobj = instagram.IGram(username, password)
+                igobj = instagram.IGram(username, password)
             else:
                 self.show_error("can you ride a car without starting it?!")
                 quit()
@@ -59,21 +60,22 @@ class Comp(object):
         # After pass first of syntax
         while index < len(all_vals):
             if all_vals[index] in DATATYPE["likeLastPostIdentifier"]:
-                # igobj.like_last_post(all_vals[index+1])
+                igobj.like_last_post(all_vals[index + 1])
                 to_log(self.log_file, "Liking last post of {0}".format(all_vals[index + 1]))
                 index += 2
 
             elif all_vals[index] in DATATYPE["FollowIdentifier"]:
                 # print("should do follow function")
                 to_log(self.log_file, "Following user {0}".format(all_vals[index + 1]))
+                igobj.follow_user(all_vals[index + 1])
+                time.sleep(randint(1.2, 6.5))
                 index += 2
-                # igobj.follow_user(all_vals[index+1])
-
             elif all_vals[index] in DATATYPE["UnFollowIdentifier"]:
                 # print("should do unfollow function")
                 to_log(self.log_file, "Unfollow user {0}".format(all_vals[index + 1]))
+                igobj.unfollow_user(all_vals[index + 1])
+                time.sleep(randint(1.2, 6.5))
                 index += 2
-                # igobj.unfollow_user(all_vals[index+1])
 
             # if all_vals[index] in DATATYPE["LikeIdentifier"]:
             #     print(" should do liking function")
