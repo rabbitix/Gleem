@@ -9,11 +9,16 @@ class Parser(object):
     def __init__(self, tokens):
         self.tokens = tokens
         self.token_index = 0
+        self.log_file = ""
         self.all_tokens = ""
 
     def parse(self):
         com = objgen.Comp()
-
+        if self.tokens[0][1] in KEYWORDS["StartIdentifier"]:
+            self.log_file = self.tokens[1][1]
+        else:
+            cc.show_error("Syntax Error")
+            quit()
         while self.token_index < len(self.tokens):
             # todo dont pass two identifier after each other
             token_type = self.tokens[self.token_index][0]
