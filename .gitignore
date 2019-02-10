@@ -11,3 +11,7 @@ src/gitter.py
 src/test.gl
 src/tmpgiter.py
 tryinsta/dev.txt
+
+tryinsta/syntax.gl
+/tryinsta/*.txt
+

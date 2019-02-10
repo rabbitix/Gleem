@@ -33,7 +33,7 @@ def main():
     except:
         print('Cannot find "' + fileName + '"')
 
-    # with open('syntax.gl', 'r') as source_code:  ===> for manually add and testing
+    # with open('syntax.gl', 'r') as source_code:  #===> for manually add and testing
     #     content = source_code.read()
 
     lex = lexer.Lexer()

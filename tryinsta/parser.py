@@ -15,7 +15,7 @@ class Parser(object):
     def parse(self):
         com = objgen.Comp()
         if self.tokens[0][1] in KEYWORDS["StartIdentifier"]:
-            self.log_file = self.tokens[1][1]
+            com.main_log = self.tokens[1][1]
         else:
             cc.show_error("Syntax Error")
             quit()

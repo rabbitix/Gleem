@@ -3,7 +3,7 @@ import instagram
 from random import randint
 
 
-class Comp(object):
+class Comp:
     def __init__(self):
         self.log_file = "def.txt"
         self.values = ""
@@ -17,7 +17,9 @@ class Comp(object):
         print('\033[31m' + msgtxt)
         print("\033[33m===============================\033[0m")
 
+    main_log = ""
     def compile(self, values):
+
         all_vals = []
         username = ""
         password = ""
@@ -42,6 +44,7 @@ class Comp(object):
             if all_vals[0] in KEYWORDS["StartIdentifier"]:
                 print("should start here!")
                 self.log_file = str(all_vals[1]) + ".txt"
+                main_log = str(all_vals[1]) + ".txt"
 
                 igobj = instagram.IGram(username, password)
             else:
@@ -74,7 +77,7 @@ class Comp(object):
                 # print("should do unfollow function")
                 to_log(self.log_file, "Unfollow user {0}".format(all_vals[index + 1]))
                 igobj.unfollow_user(all_vals[index + 1])
-                time.sleep(randint(1.2, 6.5))
+                time.sleep(randint(1, 6))
                 index += 2
 
             # if all_vals[index] in DATATYPE["LikeIdentifier"]:

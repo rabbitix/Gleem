@@ -1,6 +1,8 @@
 from InstagramAPI import InstagramAPI
 import time
-
+# import constant
+# from objgen import Comp as x
+# cc = x()
 
 class IGram:  # class for instagram part
     def __init__(self, username=None, password=None):
@@ -18,7 +20,12 @@ class IGram:  # class for instagram part
         user_id = self.ig.LastJson['user']['pk']
         user_posts = self.ig.getTotalUserFeed(usernameId=user_id)
         last_media_id = user_posts[0]['id']
-        self.ig.like(last_media_id)
+        try:
+            self.ig.like(last_media_id)
+        except:
+            print("can not like last post. maybe its a private account!")
+            #TODO add this error to log
+            # constant.to_log(cc.main_log,"can not like last post. maybe its a private account!")
 
     def follow_user(self, username):
         self.ig.searchUsername(username)
