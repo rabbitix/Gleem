@@ -55,7 +55,7 @@ class Comp:
             quit()
         index = 6
 
-        to_log(self.log_file, "started new session")
+        to_log(self.log_file, "===========started new session============")
         to_log(self.log_file, "user name: {0}".format(username))
         to_log(self.log_file, "password: {0}".format(password))
         to_log(self.log_file, "started")
@@ -71,13 +71,13 @@ class Comp:
                 # print("should do follow function")
                 to_log(self.log_file, "Following user {0}".format(all_vals[index + 1]))
                 igobj.follow_user(all_vals[index + 1])
-                time.sleep(randint(1.2, 6.5))
+                time.sleep(randint(1, 6))
                 index += 2
             elif all_vals[index] in DATATYPE["UnFollowIdentifier"]:
                 # print("should do unfollow function")
                 to_log(self.log_file, "Unfollow user {0}".format(all_vals[index + 1]))
-                igobj.unfollow_user(all_vals[index + 1])
-                time.sleep(randint(1, 6))
+                # igobj.unfollow_user(all_vals[index + 1])
+                time.sleep(randint(2, 6))
                 index += 2
 
             # if all_vals[index] in DATATYPE["LikeIdentifier"]:
