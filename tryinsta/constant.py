@@ -26,7 +26,8 @@ data_type = ["LikeLastPost", "like_last_post",
 
 # TODO make it non case sensetive
 
-
+#TODO IDEA:
+# follow from a list of ppl in file!
 
 
 def to_log(file, text):
