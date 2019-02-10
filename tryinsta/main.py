@@ -6,39 +6,35 @@ import sys
 
 
 def main():
-    # content = ""  # the source code
-    #
-    # path = os.getcwd()
-    #
-    # # Holds the name of the file the user wants to compile
-    # try:
-    #     fileName = sys.argv[1]
-    # except:
-    #     print("[ERROR] Expected 1 Argument Containing File Name to be Run e.g 'gleem file.gl'")
-    #     return
-    #
-    # # Check if the file extension is correct
-    # if fileName[len(fileName) - 3:len(fileName)] != ".gl":
-    #     print("[ERROR] File extension not recognised please make sure extension is '.gl'")
-    #     return  # quit programme
-    #
-    # # Check to make sure that only one argument is passed
-    # try:
-    #     print('[ERROR] Expected 1 argument found 2 (' + sys.argv[1] + ", " + sys.argv[2] + ')')
-    #     return  # quit programme
-    # except:
-    #     pass
-    #
-    # # Open source code file and get it's content and save it to the 'contents' var
-    # try:
-    #     with open(path + "/" + fileName, "r") as file:
-    #         content = file.read()
-    # except:
-    #     print('Cannot find "' + fileName + '"')
+    path = os.getcwd()
+
+    try:
+        fileName = sys.argv[1]
+    except:
+        print("[ERROR] Expected 1 Argument Containing File Name to be Run e.g 'gleem syntax.gl'")
+        quit()
+
+    # Check if the file extension is correct
+    if fileName[len(fileName) - 3:len(fileName)] != ".gl":
+        print("[ERROR] File extension not recognised please make sure extension is '.gl'")
+        quit()
+    # Check to make sure that only one argument is passed
+    try:
+        print('[ERROR] Expected 1 argument found 2 (' + sys.argv[1] + ", " + sys.argv[2] + ')')
+        return  # quit programme
+    except:
+        pass
 
     content = ""
-    with open('syntax.gl', 'r') as source_code:
-        content = source_code.read()
+    # Open source code file and get it's content and save it to the 'contents' var
+    try:
+        with open(path + "/" + fileName, "r") as file:
+            content = file.read()
+    except:
+        print('Cannot find "' + fileName + '"')
+
+    # with open('syntax.gl', 'r') as source_code:  ===> for manually add and testing
+    #     content = source_code.read()
 
     lex = lexer.Lexer()
     tokens = lex.tokenize(source_code=content)
