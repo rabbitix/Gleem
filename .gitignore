@@ -1,6 +1,13 @@
 venv/
 .idea/
 __pycache__/
+src/
 src/main.py
 src/objgen.py
 src/syntax.lang
+.vscode/
+src/a.tn
+src/gitter.py
+src/test.gl
+src/tmpgiter.py
+tryinsta/dev.txt
