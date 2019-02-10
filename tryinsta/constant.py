@@ -8,8 +8,8 @@ KEYWORDS = {
 
 DATATYPE = {
     "likeLastPostIdentifier": ["LikeLastPost", "like_last_post"],
-    "FollowIdentifier": ["Follow"],
-    "UnFollowIdentifier": ["Unfollow"],
+    "FollowIdentifier": ["Follow","follow"],
+    "UnFollowIdentifier": ["Unfollow","unfollow"],
     "LikeIdentifier": ["Like"],
 }
 
@@ -19,19 +19,14 @@ key_words = ["User", "user",
              "Start", "start"]
 
 data_type = ["LikeLastPost", "like_last_post",
-             "Follow",
-             "Unfollow",
+             "Follow","follow",
+             "Unfollow","unfollow",
              "Like"]
 
 
 # TODO make it non case sensetive
 
 
-# TODO Ideas to add later:
-# follow this list
-# unfollow!  -> done
-# comment (maybe hard!)
-# fetch user photo
 
 
 def to_log(file, text):
